@@ -1,0 +1,37 @@
+export default function Sidebar({ stars, form, setForm, handleAddStar, handleEditStar, handleDeleteStar, handleAddConnection, selectedStar, setSelectedStar }) {
+    return (
+        <div style={{ width: '300px', padding: '1rem', background: '#1a1a1a', color: 'white', overflowY: 'auto' }}>
+            <h2>{selectedStar ? 'Edit Star' : 'Add Star'}</h2>
+            <input placeholder="Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+            <input type="number" placeholder="X" value={form.x} onChange={e => setForm({ ...form, x: e.target.value })} />
+            <input type="number" placeholder="Y" value={form.y} onChange={e => setForm({ ...form, y: e.target.value })} />
+            <input type="number" placeholder="Z" value={form.z} onChange={e => setForm({ ...form, z: e.target.value })} />
+            <input type="color" value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} />
+            {selectedStar ? (
+                <button onClick={handleEditStar}>Save Star</button>
+            ) : (
+                <button onClick={handleAddStar}>Add Star</button>
+            )}
+            <hr />
+            <h3>Stars</h3>
+            {stars.map(s => (
+                <div key={s.id} style={{ marginBottom: '0.5rem' }}>
+                    <strong>{s.name}</strong> ({s.position.join(', ')})
+                    <div>
+                        <button onClick={() => {
+                            setSelectedStar(s.id);
+                            setForm({ name: s.name, x: s.position[0], y: s.position[1], z: s.position[2], color: s.color });
+                        }}>Edit</button>
+                        <button onClick={() => handleDeleteStar(s.id)}>Delete</button>
+                        <select onChange={e => handleAddConnection(s.id, e.target.value)} defaultValue="">
+                            <option value="">Connect to...</option>
+                            {stars.filter(o => o.id !== s.id).map(o => (
+                                <option key={o.id} value={o.id}>{o.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
