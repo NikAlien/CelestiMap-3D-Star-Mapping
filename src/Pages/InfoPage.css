@@ -1,0 +1,41 @@
+.info-page {
+    color: #081c2d;
+    text-align: center;
+    padding-top: 3rem;
+}
+
+#pieChartLogo {
+    position: relative;
+    max-width: 2.5%;
+    left: 95%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+#center {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: rgba(188, 227, 232, 0.95);
+    border-radius: 25px;
+    box-shadow: 10px 10px 10px #34B1C7;
+    width: 40%;
+}
+
+button {
+    background-color: #081c2d;
+    color: #cfeaed;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 7px;
+    box-shadow: 3px 0px 3px #34B1C7;
+    font-size: 17px;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #EBDB62;
+    color: #081c2d;
+}
