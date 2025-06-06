@@ -1,48 +1,17 @@
-import React from "react";
-import {BrowserRouter as Router, Routes, Route, BrowserRouter} from "react-router-dom";
-import MainPage from "./pages/MainPage";
-import ProjectPage from "./pages/ProjectPage";
-import PublicGallery from "./pages/PublicGalleryPage";
-import ImportProject from "./components/ImportProject.jsx";
-import CreateProject from "./components/CreateProject.jsx";
-
+// in App.jsx or wherever you define routes
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MainPage from "./Pages/MainPage.jsx";
+import ProjectEditor from "./Pages/ProjectEditor.jsx";
+import ProjectsPage from "./Pages/ProjectsPage.jsx";
 
 export default function App() {
     return (
-        <BrowserRouter>
+        <Router>
             <Routes>
-                <Route path="/" element={<MainPage/>}/>
-                <Route path="/project/:id" element={<ProjectPage/>}/>
-                <Route path="/gallery" element={<PublicGallery/>}/>
-                <Route path="/import" element={<ImportProject/>}/>
-                <Route path="/create" element={<CreateProject/>}/>
+                <Route path="/" element={<MainPage />} />
+                <Route path="/create" element={<ProjectEditor />} />
+                <Route path="/list" element={<ProjectsPage />} />
             </Routes>
-        </BrowserRouter>
+        </Router>
     );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import CreateProject from './components/CreateProject.jsx'; // rename your original App if needed
-// import MainPage from './pages/MainPage.jsx';
-//
-// export default function App() {
-//     return (
-//         <Router>
-//             <Routes>
-//                 <Route path="/" element={<MainPage />} />
-//                 <Route path="/create" element={<CreateProject />} />
-//             </Routes>
-//         </Router>
-//     );
-// }

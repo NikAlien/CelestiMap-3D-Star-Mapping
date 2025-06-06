@@ -1,21 +1,29 @@
 import { Line } from '@react-three/drei';
+import * as THREE from 'three';
 
 export default function Constellations({ connections, stars }) {
+    const starPositions = {};
+    stars.forEach(star => {
+        starPositions[star.id] = star.position;
+    });
+
     return (
         <>
-            {connections.map((pair, idx) => {
-                const star1 = stars.find(s => s.id === pair[0]);
-                const star2 = stars.find(s => s.id === pair[1]);
-                if (!star1 || !star2) return null;
+            {connections.map(([fromId, toId], index) => {
+                const start = starPositions[fromId];
+                const end = starPositions[toId];
+
+                if (!start || !end) return null;
+
                 return (
                     <Line
-                        key={idx}
-                        points={[star1.position, star2.position]}
-                        color="lightblue"
-                        lineWidth={1}
+                        key={index}
+                        points={[start, end]}
+                        color="white"
                         dashed
-                        dashSize={0.2}
-                        gapSize={0.1}
+                        dashSize={0.5}  // Length of each dash
+                        gapSize={0.3}   // Length of each gap
+                        lineWidth={1}
                     />
                 );
             })}

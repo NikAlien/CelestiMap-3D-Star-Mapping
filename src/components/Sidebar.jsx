@@ -1,4 +1,5 @@
-export default function Sidebar({ stars, form, setForm, handleAddStar, handleEditStar, handleDeleteStar, handleAddConnection, selectedStar, setSelectedStar }) {
+export default function Sidebar({ stars, form, setForm, handleAddStar, handleEditStar, handleDeleteStar, handleAddConnection, selectedStar, setSelectedStar, onSaveClick, onImportClick }) {
+
     return (
         <div style={{ width: '300px', padding: '1rem', background: '#1a1a1a', color: 'white', overflowY: 'auto' }}>
             <h2>{selectedStar ? 'Edit Star' : 'Add Star'}</h2>
@@ -32,6 +33,12 @@ export default function Sidebar({ stars, form, setForm, handleAddStar, handleEdi
                     </div>
                 </div>
             ))}
+
+            <hr />
+            <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }}>
+                <button onClick={onImportClick} style={{ marginTop: '1rem', padding: '0.5rem' }}> Import</button>
+                <button onClick={onSaveClick} style={{ marginTop: '1rem', padding: '0.5rem' }}> Save Project</button>
+            </div>
         </div>
     );
 }
