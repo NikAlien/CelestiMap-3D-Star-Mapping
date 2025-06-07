@@ -3,6 +3,8 @@ import { useAuth } from "./Context/AuthContext.jsx";
 import Dashboard from "./Pages/Dashboard.jsx";
 import Login from "./Pages/LogIn.jsx";
 import Register from "./Pages/Register.jsx";
+import ProjectEditor from "./Pages/ProjectEditor.jsx";
+import Gallery from "./Pages/Gallery.jsx";
 
 function App() {
     const { user } = useAuth();
@@ -13,6 +15,8 @@ function App() {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/gallery" element={<Gallery />} />
+                <Route path="/create" element={<ProjectEditor />} />
             </Routes>
         </Router>
     );
