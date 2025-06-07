@@ -154,6 +154,7 @@
     border: 1px solid rgba(100, 255, 218, 0.1);
     border-radius: 12px;
     padding: 1.5rem;
+    padding-bottom: 1.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
@@ -208,9 +209,6 @@
 }
 
 .favorite-btn {
-    position: absolute;
-    bottom: 1.5rem;
-    right: 1.5rem;
     background: rgba(23, 42, 69, 0.8);
     color: #64ffda;
     border: 1px solid #64ffda;
@@ -219,10 +217,15 @@
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 0.9rem;
+    margin-top: 1rem;
+    width: 100%;
+    text-align: center;
+    position: relative;
 }
 
+
 .favorite-btn:hover {
-    background: rgba(100, 255, 218, 0.1);
+    background: rgba(100, 255, 218, 0.15);
 }
 
 /* Pagination Controls */
@@ -239,7 +242,8 @@
     background: rgba(23, 42, 69, 0.8);
     color: #64ffda;
     border: 1px solid #64ffda;
-    padding: 0.5rem 1rem;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.9rem;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -284,6 +288,13 @@
 
 .no-wrap {
     white-space: nowrap;
+}
+
+.favorite-btn {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    width: 100%;
+    text-align: center;
 }
 
 /* Responsive adjustments */

@@ -46,11 +46,12 @@ const Gallery = () => {
 
     useEffect(() => {
         fetchProjects();
-    }, [pagination.page, sortOption, searchTerm]);
+    }, [pagination.page, sortOption]);
 
     const handleSearch = (e) => {
         e.preventDefault();
         setPagination(prev => ({ ...prev, page: 0 }));
+        fetchProjects(); // Trigger manual fetch
     };
 
     const handlePageChange = (newPage) => {
@@ -158,34 +159,23 @@ const Gallery = () => {
                 <>
                     <div className="project-grid">
                         {projects.map(project => (
-                            <div
-                                key={project.projectId}
-                                className="project-card"
-                                onClick={() => navigate(`/project/${project.projectId}`)}
-                            >
+                            <div className="project-card" onClick={() => navigate(`/project/${project.projectId}`)}>
                                 <div className="card-header">
                                     <h3>{project.name}</h3>
-                                    {project.isPublic && (
-                                        <span className="public-badge">Public</span>
-                                    )}
+                                    {project.isPublic && <span className="public-badge">Public</span>}
                                 </div>
                                 <div className="card-meta">
-                                    <span className="creator">
-                                        By: {project.user?.userName ?? 'Unknown'}
-                                    </span>
-                                    <span className="date">
-                                        {formatDate(project.createdAt)}
-                                    </span>
+                                    <span className="creator">By: {project.user?.userName ?? 'Unknown'}</span>
+                                    <span className="date">{formatDate(project.createdAt)}</span>
                                 </div>
                                 <div className="card-stats">
                                     <span>{project.stars?.length ?? 0} stars</span>
                                     <span>{project.constellationLines?.length ?? 0} connections</span>
                                 </div>
                                 {user && (
-                                    <button
-                                        className="favorite-btn"
-                                        onClick={(e) => {e.stopPropagation();}}
-                                    > ♡ Favorite </button>
+                                    <button className="favorite-btn" onClick={(e) => { e.stopPropagation(); }}>
+                                        ♡ Favorite
+                                    </button>
                                 )}
                             </div>
                         ))}
