@@ -18,6 +18,9 @@ const Dashboard = () => {
                             <button className="nav-button" onClick={() => navigate('/create')}>
                                 Create
                             </button>
+                            <button className="nav-button" onClick={() => navigate('/myProjects')}>
+                                <span className="no-wrap">My Projects</span>
+                            </button>
                             <button className="nav-button" onClick={() => navigate('/favorites')}>
                                 Favorites
                             </button>

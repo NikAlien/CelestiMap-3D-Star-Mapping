@@ -63,6 +63,19 @@ const Gallery = () => {
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
+    const addFavorite = async (projectId) => {
+        try {
+            await fetch(`http://localhost:8080/api/v1/project/${projectId}/favorite`,
+                {
+                    method: 'POST',
+                    headers: {'Authorization': `Bearer ${user.token}`}
+                }
+            );
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     return (
         <div className="gallery-container">
             <nav className="dashboard-nav">
@@ -71,54 +84,34 @@ const Gallery = () => {
                     {user ? (
                         <>
                             <span className="nav-user">Welcome, {user.userName}</span>
-                            <button
-                                className="nav-button"
-                                onClick={() => navigate('/create')}
-                            >
+                            <button className="nav-button" onClick={() => navigate('/create')}>
                                 Create
                             </button>
-                            <button
-                                className="nav-button"
-                                onClick={() => navigate('/favorites')}
-                            >
+                            <button className="nav-button" onClick={() => navigate('/myProjects')}>
+                                <span className="no-wrap">My Projects</span>
+                            </button>
+                            <button className="nav-button" onClick={() => navigate('/favorites')}>
                                 Favorites
                             </button>
-                            {/* Dashboard button instead of Gallery */}
-                            <button
-                                className="nav-button"
-                                onClick={() => navigate('/')}
-                            >
-                                Dashboard
-                            </button>
+                            <button className="nav-button" onClick={() => navigate('/')}>Dashboard</button>
                             <button className="nav-button" onClick={logout}>
                                 Logout
                             </button>
                         </>
                     ) : (
                         <>
-                            <button
-                                className="nav-button"
-                                onClick={() => navigate('/login')}
-                            >
+                            <button className="nav-button" onClick={() => navigate('/login')}>
                                 Login
                             </button>
-                            <button
-                                className="nav-button"
-                                onClick={() => navigate('/register')}
-                            >
+                            <button className="nav-button" onClick={() => navigate('/register')}>
                                 Register
                             </button>
-                            {/* Dashboard button instead of Gallery */}
-                            <button
-                                className="nav-button"
-                                onClick={() => navigate('/')}
-                            >
-                                Dashboard
-                            </button>
+                            <button className="nav-button" onClick={() => navigate('/')}>Dashboard</button>
                         </>
                     )}
                 </div>
             </nav>
+
             <div className="gallery-header">
                 <h1>Public Projects Gallery</h1>
                 <p>Explore constellations created by our community</p>
@@ -159,7 +152,11 @@ const Gallery = () => {
                 <>
                     <div className="project-grid">
                         {projects.map(project => (
-                            <div className="project-card" onClick={() => navigate(`/project/${project.projectId}`)}>
+                            <div
+                                key={project.projectId}
+                                className="project-card"
+                                onClick={() => navigate(`/project/${project.projectId}`)}
+                            >
                                 <div className="card-header">
                                     <h3>{project.name}</h3>
                                     {project.isPublic && <span className="public-badge">Public</span>}
@@ -173,7 +170,9 @@ const Gallery = () => {
                                     <span>{project.constellationLines?.length ?? 0} connections</span>
                                 </div>
                                 {user && (
-                                    <button className="favorite-btn" onClick={(e) => { e.stopPropagation(); }}>
+                                    <button className="favorite-btn" onClick={(e) => {
+                                        e.stopPropagation();
+                                        addFavorite(project.projectId);}}>
                                         ♡ Favorite
                                     </button>
                                 )}

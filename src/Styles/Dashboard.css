@@ -121,3 +121,7 @@
 .feature-card p {
     color: #a8b2d1;
 }
+
+.no-wrap {
+    white-space: nowrap;
+}

@@ -28,7 +28,8 @@ export const AuthProvider = ({ children }) => {
                 const userData = await response.json();
                 setUser({
                     userId: userData.userId,
-                    userName: userData.userName
+                    userName: userData.userName,
+                    token
                 });
             }
         } catch (error) {

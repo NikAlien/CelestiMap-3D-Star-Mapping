@@ -5,6 +5,8 @@ import Login from "./Pages/LogIn.jsx";
 import Register from "./Pages/Register.jsx";
 import ProjectEditor from "./Pages/ProjectEditor.jsx";
 import Gallery from "./Pages/Gallery.jsx";
+import FavoriteList from "./Pages/FavoriteList.jsx";
+import MyProjects from "./Pages/MyProjects.jsx";
 
 function App() {
     const { user } = useAuth();
@@ -16,6 +18,8 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/gallery" element={<Gallery />} />
+                <Route path="/favorites" element={<FavoriteList />} />
+                <Route path="/myProjects" element={<MyProjects />} />
                 <Route path="/create" element={<ProjectEditor />} />
             </Routes>
         </Router>
