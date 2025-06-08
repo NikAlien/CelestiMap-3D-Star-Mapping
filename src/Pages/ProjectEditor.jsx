@@ -1,8 +1,8 @@
 import {useState, useEffect, useRef} from 'react';
-// import { v4 as uuidv4 } from 'uuid';
 import Scene from "../Components/Scene.jsx";
 import Sidebar from "../Components/Sidebar.jsx";
 import SaveDialog from "../Components/SaveDialog.jsx";
+import {saveProject, updateProject} from "../Context/API.js";
 
 const LOCAL_STORAGE_KEY = 'starConstellationDataV2';
 
@@ -14,6 +14,7 @@ export default function ProjectEditor() {
     const [selectedStar, setSelectedStar] = useState(null);
     const [saveDialogOpen, setSaveDialogOpen] = useState(false);
     const fileInputRef = useRef(null);
+    const [currentProjectId, setCurrentProjectId] = useState(null);
 
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
@@ -28,6 +29,38 @@ export default function ProjectEditor() {
     useEffect(() => {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ stars, connections }));
     }, [stars, connections]);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const projectId = params.get('edit');
+
+        if (projectId && user) {
+            const loadProject = async () => {
+                try {
+                    const response = await getProject(user.token, projectId);
+                    const project = response.data;
+
+                    setStars(project.stars.map(star => ({
+                        id: star.id,
+                        name: star.name,
+                        position: [star.x, star.y, star.z],
+                        color: star.color,
+                        additionalInfo: star.additionalInfo
+                    })));
+
+                    setConnections(project.connections.map(conn =>
+                        [conn.startId, conn.endId]
+                    ));
+
+                    setCurrentProjectId(project.id);
+                } catch (error) {
+                    console.error('Error loading project:', error);
+                }
+            };
+
+            loadProject();
+        }
+    }, [user]);
 
     const handleAddStar = () => {
         const newStar = {
@@ -62,19 +95,18 @@ export default function ProjectEditor() {
         }
     };
 
-    const handleSave = (saveData) => {
-        const { projectName, format } = saveData;
+    const handleSave = async (saveData) => {
+        const {projectName, format} = saveData;
 
         if (format === 'json') {
-            const data = JSON.stringify({ stars, connections }, null, 2);
-            const blob = new Blob([data], { type: 'application/json' });
+            const data = JSON.stringify({stars, connections}, null, 2);
+            const blob = new Blob([data], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
             link.download = `${projectName}.json`;
             link.click();
-        }
-        else if (format === 'csv') {
+        } else if (format === 'csv') {
             // Generate CSV content
             let csvContent = "Type,Id,Name,X,Y,Z,Color,From,To\n";
 
@@ -88,17 +120,16 @@ export default function ProjectEditor() {
                 csvContent += `Connection,,${conn[0]},${conn[1]},,,,,,\n`;
             });
 
-            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const blob = new Blob([csvContent], {type: 'text/csv'});
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
             link.download = `${projectName}.csv`;
             link.click();
-        }
-        else if (format === 'online') {
+        } else if (format === 'online') {
             fetch('http://localhost:8080/api/v1/project', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     name: projectName,
                     stars: stars.map(star => ({
@@ -118,6 +149,37 @@ export default function ProjectEditor() {
                     else alert('Save failed');
                 })
                 .catch(error => alert('Error: ' + error.message));
+        } else if (format === 'online') {
+            const projectData = {
+                id: currentProjectId,
+                name: projectName,
+                isPublic: visibility === 'public',
+                createdAt: new Date().toISOString(),
+                stars: stars.map(star => ({
+                    id: star.id,
+                    name: star.name,
+                    x: star.position[0],
+                    y: star.position[1],
+                    z: star.position[2],
+                    color: star.color,
+                    additionalInfo: star.additionalInfo || ''
+                })),
+                connections: connections.map(([fromId, toId]) => ({
+                    startId: fromId,
+                    endId: toId
+                }))
+            };
+
+            try {
+                if (currentProjectId) {
+                    await updateProject(user.token, projectData);
+                } else {
+                    await saveProject(user.token, projectData);
+                }
+                navigate('/myProjects');
+            } catch (error) {
+                console.error('Save failed:', error);
+            }
         }
     };
 

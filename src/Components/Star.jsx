@@ -1,11 +1,19 @@
-export default function Star({ position, color }) {
+import { Html } from '@react-three/drei';
+
+export default function Star({ star, onClick }) {
     return (
-        <>
-            <mesh position={position}>
+        <group>
+            <mesh position={star.position} onClick={() => onClick(star)}>
                 <sphereGeometry args={[0.25, 32, 32]} />
-                <meshStandardMaterial emissive={color || 'white'} emissiveIntensity={2} color={color} />
+                <meshStandardMaterial
+                    emissive={star.color || 'white'}
+                    emissiveIntensity={2}
+                    color={star.color}
+                />
             </mesh>
-            <pointLight position={position} color={color} intensity={0.8} distance={4} decay={2} />
-        </>
+            <Html position={[0, 0.5, 0]} center>
+                <div className="star-label">{star.name}</div>
+            </Html>
+        </group>
     );
 }

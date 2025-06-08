@@ -2,6 +2,12 @@ export default function Sidebar({ stars, form, setForm, handleAddStar, handleEdi
 
     return (
         <div style={{ width: '300px', padding: '1rem', background: '#1a1a1a', color: 'white', overflowY: 'auto' }}>
+            <button className="exit-btn"
+                onClick={() => {
+                    if(window.confirm('All unsaved changes will be lost. Continue?')) {
+                        navigate(user ? '/myProjects' : '/');}}}>
+                Exit Project
+            </button>
             <h2>{selectedStar ? 'Edit Star' : 'Add Star'}</h2>
             <input placeholder="Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
             <input type="number" placeholder="X" value={form.x} onChange={e => setForm({ ...form, x: e.target.value })} />

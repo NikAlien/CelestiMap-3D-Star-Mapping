@@ -28,3 +28,12 @@ export const registerUser = (username, password) =>
 
 export const getUserInfo = (token) =>
     api.get('/auth/me', { headers: { Authorization: `Bearer ${token}` } });
+
+export const saveProject = (token, projectData) =>
+    api.post('/project/save', projectData, { headers: { Authorization: `Bearer ${token}` } });
+
+export const updateProject = (token, projectData) =>
+    api.put('/project/update', projectData, { headers: { Authorization: `Bearer ${token}` } });
+
+export const getProject = (token, projectId) =>
+    api.get(`/project/${projectId}`, { headers: { Authorization: `Bearer ${token}` } });

@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import {getUserInfo} from "./API.js";
 
 const AuthContext = createContext();
 
@@ -20,9 +21,7 @@ export const AuthProvider = ({ children }) => {
 
     const fetchUserData = async (token) => {
         try {
-            const response = await fetch('http://localhost:8080/api/v1/auth/me', {
-                headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
-            });
+            const response = await getUserInfo(token);
 
             if (response.ok) {
                 const userData = await response.json();

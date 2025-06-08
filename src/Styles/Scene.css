@@ -1,0 +1,51 @@
+.star-label {
+    background: rgba(23, 42, 69, 0.8);
+    color: #64ffda;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    transform: translateX(-50%);
+}
+
+.star-info-panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(23, 42, 69, 0.9);
+    border: 1px solid rgba(100, 255, 218, 0.3);
+    border-radius: 8px;
+    padding: 15px;
+    width: 300px;
+    z-index: 100;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 10px;
+}
+
+.color-box {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.additional-info {
+    max-height: 100px;
+    overflow: hidden;
+    position: relative;
+}
+
+.more-link {
+    color: #64ffda;
+    cursor: pointer;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(to right, transparent, #0a192f 50%);
+    padding-left: 20px;
+}
