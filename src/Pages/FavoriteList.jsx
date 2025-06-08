@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import '../Styles/Favorite.css';
 import Navbar from "../Components/Navbar.jsx";
+import {fetchFavorites, removeFavorite} from "../Context/API.js";
 
 const FavoriteList = () => {
     const [favorites, setFavorites] = useState([]);
@@ -15,22 +16,10 @@ const FavoriteList = () => {
             navigate('/login');
             return;
         }
-
-        const fetchFavorites = async () => {
-            if (!user || !user.token) {
-                console.error("User or token missing.");
-                return;
-            }
+        const loadFavorites = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/v1/favorite', {
-                    headers: {
-                        'Authorization': `Bearer ${user.token}`
-                    }
-                });
-
-                if (!response.ok) throw new Error('Failed to fetch favorites');
-                const data = await response.json();
-                setFavorites(data);
+                const response = await fetchFavorites(user.token);
+                setFavorites(response.data);
             } catch (error) {
                 console.error('Error:', error);
             } finally {
@@ -38,21 +27,13 @@ const FavoriteList = () => {
             }
         };
 
-        fetchFavorites();
+        loadFavorites();
     }, [user, navigate]);
 
-    const removeFavorite = async (projectId) => {
+    const handleRemoveFavorite = async (projectId) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/v1/favorite/${projectId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${user.token}`
-                }
-            });
-
-            if (response.ok) {
-                setFavorites(favorites.filter(fav => fav.projectId !== projectId));
-            }
+            await removeFavorite(user.token, projectId);
+            setFavorites(favorites.filter(fav => fav.projectId !== projectId));
         } catch (error) {
             console.error('Error:', error);
         }
@@ -92,7 +73,7 @@ const FavoriteList = () => {
                             </div>
                             <button className="remove-btn" onClick={(e) => {
                                     e.stopPropagation();
-                                    removeFavorite(favorite.projectId);}}>
+                                    handleRemoveFavorite(favorite.projectId);}}>
                                 Remove
                             </button>
                         </div>

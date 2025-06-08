@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import '../Styles/Favorite.css';
 import Navbar from "../Components/Navbar.jsx";
+import {fetchMyProjects, removeMyProject} from "../Context/API.js";
 
 const MyProjects = () => {
     const [projects, setProjects] = useState([]);
@@ -16,21 +17,10 @@ const MyProjects = () => {
             return;
         }
 
-        const fetchMyProjects = async () => {
-            if (!user || !user.token) {
-                console.error("User or token missing.");
-                return;
-            }
+        const loadProjects = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/v1/project/myProjects', {
-                    headers: {
-                        'Authorization': `Bearer ${user.token}`
-                    }
-                });
-
-                if (!response.ok) throw new Error('Failed to fetch projects');
-                const data = await response.json();
-                setProjects(data);
+                const response = await fetchMyProjects(user.token);
+                setProjects(response.data);
             } catch (error) {
                 console.error('Error:', error);
             } finally {
@@ -38,21 +28,13 @@ const MyProjects = () => {
             }
         };
 
-        fetchMyProjects();
+        loadProjects();
     }, [user, navigate]);
 
-    const removeMyProjects = async (projectId) => {
+    const removeMyProject = async (projectId) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/v1/project/delete/${projectId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${user.token}`
-                }
-            });
-
-            if (response.ok) {
-                setProjects(projects.filter(fav => fav.projectId !== projectId));
-            }
+            await removeMyProject(user.token, projectId);
+            setProjects(projects.filter(fav => fav.projectId !== projectId));
         } catch (error) {
             console.error('Error:', error);
         }

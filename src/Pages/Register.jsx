@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext.jsx';
 import '../styles/auth.css';
+import {registerUser} from "../Context/API.js";
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -15,33 +16,16 @@ const Register = () => {
         e.preventDefault();
         setError('');
 
-        if (password !== confirmPassword) {
-            setError('Passwords do not match');
-            return;
-        }
-
-        if (password.length < 6) {
-            setError('Password must be at least 6 characters');
-            return;
-        }
+        if (password !== confirmPassword) return setError('Passwords do not match');
+        if (password.length < 6) return setError('Password must be at least 6 characters');
 
         try {
-            const response = await fetch('http://localhost:8080/api/v1/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                login(data.token);
-                navigate('/');
-            } else {
-                setError(data.error || 'Registration failed');
-            }
+            const response = await registerUser(username, password);
+            const { token } = response.data;
+            login(token);
+            navigate('/');
         } catch (err) {
-            setError('Network error. Please try again.');
+            setError(err.response?.data?.error || 'Registration failed');
         }
     };
 

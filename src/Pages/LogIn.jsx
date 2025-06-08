@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext.jsx';
 import '../styles/Auth.css';
+import {loginUser} from "../Context/API.js";
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -13,30 +14,13 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-
         try {
-            const response = await fetch('http://localhost:8080/api/v1/auth/login',
-                {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ username, password })
-                }
-            );
-
-            if (response.ok) {
-                const data = await response.json();
-                if (data.token) {
-                    login(data.token);
-                    navigate('/');
-                } else {
-                    setError('Token not received');
-                }
-            } else {
-                const errorData = await response.json();
-                setError(errorData.error || 'Login failed');
-            }
+            const response = await loginUser(username, password);
+            const { token } = response.data;
+            login(token);
+            navigate('/');
         } catch (err) {
-            setError('Network error. Please try again.');
+            setError(err.response?.data?.error || 'Login failed');
         }
     };
 

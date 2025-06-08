@@ -3,41 +3,32 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import '../Styles/Gallery.css';
 import Navbar from "../Components/Navbar.jsx";
+import {addFavorite, fetchPublicProjects} from "../Context/API.js";
+import usePagination from '../Hooks/Pagination.js';
 
 const Gallery = () => {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOption, setSortOption] = useState('createdAt,desc');
-    const [pagination, setPagination] = useState({
-        page: 0,
-        size: 12,
-        totalPages: 0,
-        totalElements: 0
-    });
+    const [pagination, handlePageChange, updateMeta] = usePagination();
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    const fetchProjects = async () => {
+    const loadProjects = async () => {
         setLoading(true);
         try {
-            const params = new URLSearchParams({
+            const params = {
                 page: pagination.page,
                 size: pagination.size,
                 sort: sortOption,
                 ...(searchTerm && { search: searchTerm })
-            }).toString();
+            };
 
-            const response = await fetch(`http://localhost:8080/api/v1/project/public?${params}`);
-            if (!response.ok) throw new Error('Failed to fetch');
-
-            const data = await response.json();
+            const response = await fetchPublicProjects(params);
+            const data = response.data;
             setProjects(data.content);
-            setPagination(prev => ({
-                ...prev,
-                totalPages: data.totalPages,
-                totalElements: data.totalElements
-            }));
+            updateMeta(data.totalPages, data.totalElements);
         } catch (error) {
             console.error('Error fetching projects:', error);
         } finally {
@@ -46,36 +37,24 @@ const Gallery = () => {
     };
 
     useEffect(() => {
-        fetchProjects();
+        loadProjects();
     }, [pagination.page, sortOption]);
 
     const handleSearch = (e) => {
         e.preventDefault();
-        setPagination(prev => ({ ...prev, page: 0 }));
-        fetchProjects(); // Trigger manual fetch
+        handlePageChange(0)
+        loadProjects();
     };
 
-    const handlePageChange = (newPage) => {
-        setPagination(prev => ({ ...prev, page: newPage }));
-    };
-
-    const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return new Date(dateString).toLocaleDateString(undefined, options);
-    };
-
-    const addFavorite = async (projectId) => {
+    const handleAddFavorite = async (projectId) => {
         try {
-            await fetch(`http://localhost:8080/api/v1/project/${projectId}/favorite`,
-                {
-                    method: 'POST',
-                    headers: {'Authorization': `Bearer ${user.token}`}
-                }
-            );
+            await addFavorite(user.token, projectId);
         } catch (error) {
             console.error('Error:', error);
         }
     };
+
+    const formatDate = (dateString) => new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
 
     return (
         <div className="gallery-container">
@@ -139,7 +118,7 @@ const Gallery = () => {
                                 {user && (
                                     <button className="favorite-btn" onClick={(e) => {
                                         e.stopPropagation();
-                                        addFavorite(project.projectId);}}>
+                                        handleAddFavorite(project.projectId);}}>
                                         ♡ Favorite
                                     </button>
                                 )}
@@ -148,23 +127,9 @@ const Gallery = () => {
                     </div>
 
                     <div className="pagination-controls">
-                        <button
-                            disabled={pagination.page === 0}
-                            onClick={() => handlePageChange(pagination.page - 1)}
-                        >
-                            Previous
-                        </button>
-
-                        <span className="no-wrap">
-                            Page {pagination.page + 1} of {pagination.totalPages}
-                        </span>
-
-                        <button
-                            disabled={pagination.page >= pagination.totalPages - 1}
-                            onClick={() => handlePageChange(pagination.page + 1)}
-                        >
-                            Next
-                        </button>
+                        <button disabled={pagination.page === 0} onClick={() => handlePageChange(pagination.page - 1)}>Previous</button>
+                        <span className="no-wrap">Page {pagination.page + 1} of {pagination.totalPages}</span>
+                        <button disabled={pagination.page >= pagination.totalPages - 1} onClick={() => handlePageChange(pagination.page + 1)}>Next</button>
                     </div>
                 </>
             )}
