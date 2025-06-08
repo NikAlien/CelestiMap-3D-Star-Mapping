@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import '../Styles/Favorite.css';
+import Navbar from "../Components/Navbar.jsx";
 
 const FavoriteList = () => {
     const [favorites, setFavorites] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -59,28 +60,7 @@ const FavoriteList = () => {
 
     return (
         <div className="favorites-container">
-            <nav className="dashboard-nav">
-                <div className="nav-logo">CelestiMap</div>
-                <div className="nav-links">
-                    {user && (
-                        <>
-                            <span className="nav-user">Welcome, {user.userName}</span>
-                            <button className="nav-button" onClick={() => navigate('/create')}>
-                                Create
-                            </button>
-                            <button className="nav-button" onClick={() => navigate('/myProjects')}>
-                                <span className="no-wrap">My Projects</span>
-                            </button>
-                            <button className="nav-button" onClick={() => navigate('/gallery')}>
-                                Gallery
-                            </button>
-                            <button className="nav-button" onClick={() => navigate('/')}>Dashboard</button>
-                            <button className="nav-button" onClick={logout}>Logout</button>
-                        </>
-                    )}
-                </div>
-            </nav>
-
+            <Navbar/>
             <div className="favorites-header">
                 <h1>Your Favorite Projects</h1>
                 <p>All the constellations you've marked as favorites</p>

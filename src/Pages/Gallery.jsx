@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import '../Styles/Gallery.css';
+import Navbar from "../Components/Navbar.jsx";
 
 const Gallery = () => {
     const [projects, setProjects] = useState([]);
@@ -14,7 +15,7 @@ const Gallery = () => {
         totalPages: 0,
         totalElements: 0
     });
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     const fetchProjects = async () => {
@@ -78,40 +79,7 @@ const Gallery = () => {
 
     return (
         <div className="gallery-container">
-            <nav className="dashboard-nav">
-                <div className="nav-logo">CelestiMap</div>
-                <div className="nav-links">
-                    {user ? (
-                        <>
-                            <span className="nav-user">Welcome, {user.userName}</span>
-                            <button className="nav-button" onClick={() => navigate('/create')}>
-                                Create
-                            </button>
-                            <button className="nav-button" onClick={() => navigate('/myProjects')}>
-                                <span className="no-wrap">My Projects</span>
-                            </button>
-                            <button className="nav-button" onClick={() => navigate('/favorites')}>
-                                Favorites
-                            </button>
-                            <button className="nav-button" onClick={() => navigate('/')}>Dashboard</button>
-                            <button className="nav-button" onClick={logout}>
-                                Logout
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <button className="nav-button" onClick={() => navigate('/login')}>
-                                Login
-                            </button>
-                            <button className="nav-button" onClick={() => navigate('/register')}>
-                                Register
-                            </button>
-                            <button className="nav-button" onClick={() => navigate('/')}>Dashboard</button>
-                        </>
-                    )}
-                </div>
-            </nav>
-
+            <Navbar/>
             <div className="gallery-header">
                 <h1>Public Projects Gallery</h1>
                 <p>Explore constellations created by our community</p>
@@ -162,7 +130,6 @@ const Gallery = () => {
                                     {project.isPublic && <span className="public-badge">Public</span>}
                                 </div>
                                 <div className="card-meta">
-                                    <span className="creator">By: {project.user?.userName ?? 'Unknown'}</span>
                                     <span className="date">{formatDate(project.createdAt)}</span>
                                 </div>
                                 <div className="card-stats">

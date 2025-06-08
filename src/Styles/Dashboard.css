@@ -4,52 +4,6 @@
     color: #e6f1ff;
     padding: 0;
 }
-
-.dashboard-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background: rgba(23, 42, 69, 0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(100, 255, 218, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.nav-logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #64ffda;
-}
-
-.nav-links {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-.nav-button {
-    background: transparent;
-    color: #ccd6f6;
-    border: 1px solid #64ffda;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.nav-button:hover {
-    background: rgba(100, 255, 218, 0.1);
-}
-
-.nav-user {
-    color: #a8b2d1;
-    margin-right: 1rem;
-    white-space: nowrap;
-}
-
 .dashboard-hero {
     text-align: center;
     padding: 5rem 2rem;
