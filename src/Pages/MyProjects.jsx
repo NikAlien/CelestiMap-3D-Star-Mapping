@@ -31,6 +31,11 @@ const MyProjects = () => {
         loadProjects();
     }, [user, navigate]);
 
+    const handleEditProject = (projectId, e) => {
+        e.stopPropagation();
+        navigate(`/create?edit=${projectId}`);
+    };
+
     const removeMyProject = async (projectId) => {
         try {
             await removeMyProject(user.token, projectId);
@@ -52,8 +57,8 @@ const MyProjects = () => {
                 <div className="loading-spinner">Loading favorites...</div>
             ) : projects.length === 0 ? (
                 <div className="no-results">
-                    <h3>No favorites yet</h3>
-                    <p>Explore the gallery and add projects to your favorites!</p>
+                    <h3>No projects yet</h3>
+                    <p>Press 'Create Projects' and go through galaxies!</p>
                 </div>
             ) : (
                 <div className="favorites-grid">
@@ -72,6 +77,9 @@ const MyProjects = () => {
                                     {new Date(favorite.createdAt).toLocaleDateString()}
                                 </span>
                             </div>
+                            <button className="edit-btn" onClick={(e) => handleEditProject(favorite.projectId, e)}>
+                                Edit
+                            </button>
                             <button className="remove-btn" onClick={(e) => {
                                 e.stopPropagation();
                                 removeMyProjects(favorite.projectId);}}>

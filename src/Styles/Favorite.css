@@ -68,3 +68,18 @@
 .nowrap {
     white-space: nowrap;
 }
+
+.edit-btn {
+    background: rgba(100, 255, 218, 0.1);
+    color: #64ffda;
+    border: 1px solid #64ffda;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 0.5rem;
+}
+
+.edit-btn:hover {
+    background: rgba(100, 255, 218, 0.2);
+}

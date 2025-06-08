@@ -1,11 +1,16 @@
+import {useAuth} from "../Context/AuthContext.jsx";
+import {useNavigate} from "react-router-dom";
+
 export default function Sidebar({ stars, form, setForm, handleAddStar, handleEditStar, handleDeleteStar, handleAddConnection, selectedStar, setSelectedStar, onSaveClick, onImportClick }) {
+    const navigate = useNavigate();
+    const { user } = useAuth();
 
     return (
         <div style={{ width: '300px', padding: '1rem', background: '#1a1a1a', color: 'white', overflowY: 'auto' }}>
-            <button className="exit-btn"
-                onClick={() => {
-                    if(window.confirm('All unsaved changes will be lost. Continue?')) {
-                        navigate(user ? '/myProjects' : '/');}}}>
+            <button className="exit-btn" onClick={() => {
+                if(window.confirm('All unsaved changes will be lost. Continue?')) {
+                    navigate(user ? '/myProjects' : '/');
+                }}}>
                 Exit Project
             </button>
             <h2>{selectedStar ? 'Edit Star' : 'Add Star'}</h2>
@@ -14,6 +19,11 @@ export default function Sidebar({ stars, form, setForm, handleAddStar, handleEdi
             <input type="number" placeholder="Y" value={form.y} onChange={e => setForm({ ...form, y: e.target.value })} />
             <input type="number" placeholder="Z" value={form.z} onChange={e => setForm({ ...form, z: e.target.value })} />
             <input type="color" value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} />
+            <textarea
+                placeholder="Additional Info"
+                value={form.additionalInfo}
+                onChange={e => setForm({ ...form, additionalInfo: e.target.value })}
+            />
             {selectedStar ? (
                 <button onClick={handleEditStar}>Save Star</button>
             ) : (
@@ -27,7 +37,7 @@ export default function Sidebar({ stars, form, setForm, handleAddStar, handleEdi
                     <div>
                         <button onClick={() => {
                             setSelectedStar(s.id);
-                            setForm({ name: s.name, x: s.position[0], y: s.position[1], z: s.position[2], color: s.color });
+                            setForm({ name: s.name, x: s.position[0], y: s.position[1], z: s.position[2], color: s.color, additionalInfo: s.additionalInfo });
                         }}>Edit</button>
                         <button onClick={() => handleDeleteStar(s.id)}>Delete</button>
                         <select onChange={e => handleAddConnection(s.id, e.target.value)} defaultValue="">

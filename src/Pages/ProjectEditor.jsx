@@ -3,6 +3,9 @@ import Scene from "../Components/Scene.jsx";
 import Sidebar from "../Components/Sidebar.jsx";
 import SaveDialog from "../Components/SaveDialog.jsx";
 import {saveProject, updateProject} from "../Context/API.js";
+import {useAuth} from "../Context/AuthContext.jsx";
+import {useNavigate} from "react-router-dom";
+import StarInfoPanel from "../Components/StarInfo.jsx";
 
 const LOCAL_STORAGE_KEY = 'starConstellationDataV2';
 
@@ -10,11 +13,14 @@ export default function ProjectEditor() {
     const [nextId, setNextId] = useState(1);
     const [stars, setStars] = useState([]);
     const [connections, setConnections] = useState([]);
-    const [form, setForm] = useState({ name: '', x: 0, y: 0, z: 0, color: '#ffffff' });
+    const [form, setForm] = useState({ name: '', x: 0, y: 0, z: 0, color: '#ffffff', additionalInfo: '' });
     const [selectedStar, setSelectedStar] = useState(null);
     const [saveDialogOpen, setSaveDialogOpen] = useState(false);
     const fileInputRef = useRef(null);
     const [currentProjectId, setCurrentProjectId] = useState(null);
+    const { user } = useAuth();
+    const navigate = useNavigate();
+    const [hoveredStar, setHoveredStar] = useState(null);
 
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
@@ -67,18 +73,22 @@ export default function ProjectEditor() {
             id: nextId,
             name: form.name,
             position: [parseFloat(form.x), parseFloat(form.y), parseFloat(form.z)],
-            color: form.color
+            color: form.color,
+            additionalInfo: form.additionalInfo
         };
         setStars([...stars, newStar]);
         setNextId(nextId + 1);
-        setForm({ name: '', x: 0, y: 0, z: 0, color: '#ffffff' });
+        setForm({ name: '', x: 0, y: 0, z: 0, color: '#ffffff', additionalInfo: '' });
     };
 
     const handleEditStar = () => {
         setStars(stars.map(s =>
-            s.id === selectedStar ? { ...s, ...form, position: [parseFloat(form.x), parseFloat(form.y), parseFloat(form.z)] } : s
+            s.id === selectedStar
+                ? { ...s, name: form.name, position: [parseFloat(form.x), parseFloat(form.y), parseFloat(form.z)], color: form.color, additionalInfo: form.additionalInfo }
+                : s
         ));
         setSelectedStar(null);
+        setForm({ name: '', x: 0, y: 0, z: 0, color: '#ffffff', additionalInfo: '' });
     };
 
     const handleDeleteStar = (id) => {
@@ -95,91 +105,63 @@ export default function ProjectEditor() {
         }
     };
 
-    const handleSave = async (saveData) => {
-        const {projectName, format} = saveData;
+    const handleSave = async ({ projectName, format, visibility }) => {
+        const projectData = {
+            id: currentProjectId || null,
+            name: projectName,
+            isPublic: (visibility === 'public'),
+            createdAt: new Date().toISOString(),
+            stars: stars.map(star => ({
+                id: star.id,
+                name: star.name,
+                x: star.position[0],
+                y: star.position[1],
+                z: star.position[2],
+                color: star.color,
+                additionalInfo: star.additionalInfo || ""
+            })),
+            connections: connections.map(([fromId, toId]) => ({
+                startId: fromId,
+                endId: toId
+            }))
+        };
 
-        if (format === 'json') {
-            const data = JSON.stringify({stars, connections}, null, 2);
-            const blob = new Blob([data], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${projectName}.json`;
-            link.click();
-        } else if (format === 'csv') {
-            // Generate CSV content
-            let csvContent = "Type,Id,Name,X,Y,Z,Color,From,To\n";
+        try {
+            if (format === 'online' && !user) {
+                alert('You must be logged in to save online!');
+                return;
+            }
 
-            // Stars
-            stars.forEach(star => {
-                csvContent += `Star,${star.id},${star.name},${star.position[0]},${star.position[1]},${star.position[2]},${star.color},,\n`;
-            });
 
-            // Connections
-            connections.forEach(conn => {
-                csvContent += `Connection,,${conn[0]},${conn[1]},,,,,,\n`;
-            });
-
-            const blob = new Blob([csvContent], {type: 'text/csv'});
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${projectName}.csv`;
-            link.click();
-        } else if (format === 'online') {
-            fetch('http://localhost:8080/api/v1/project', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    name: projectName,
-                    stars: stars.map(star => ({
-                        id: star.id,
-                        name: star.name,
-                        x: star.position[0],
-                        y: star.position[1],
-                        z: star.position[2],
-                        color: star.color
-                    })),
-                    connections,
-                    visibility
-                })
-            })
-                .then(response => {
-                    if (response.ok) alert('Saved online successfully!');
-                    else alert('Save failed');
-                })
-                .catch(error => alert('Error: ' + error.message));
-        } else if (format === 'online') {
-            const projectData = {
-                id: currentProjectId,
-                name: projectName,
-                isPublic: visibility === 'public',
-                createdAt: new Date().toISOString(),
-                stars: stars.map(star => ({
-                    id: star.id,
-                    name: star.name,
-                    x: star.position[0],
-                    y: star.position[1],
-                    z: star.position[2],
-                    color: star.color,
-                    additionalInfo: star.additionalInfo || ''
-                })),
-                connections: connections.map(([fromId, toId]) => ({
-                    startId: fromId,
-                    endId: toId
-                }))
-            };
-
-            try {
+            if (format === 'online') {
                 if (currentProjectId) {
                     await updateProject(user.token, projectData);
                 } else {
-                    await saveProject(user.token, projectData);
+                    const newId = await saveProject(user.token, projectData);
+                    setCurrentProjectId(newId);
                 }
                 navigate('/myProjects');
-            } catch (error) {
-                console.error('Save failed:', error);
+            } else if (format === 'json') {
+                const dataStr = JSON.stringify({ stars, connections }, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${projectName}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+            } else if (format === 'csv') {
+                const csv = stars.map(s => `${s.name},${s.position[0]},${s.position[1]},${s.position[2]},${s.color},"${s.additionalInfo || ''}"`).join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${projectName}.csv`;
+                link.click();
+                URL.revokeObjectURL(url);
             }
+        } catch (err) {
+            alert('Save failed: ' + (err.message || 'Unknown error'));
         }
     };
 
@@ -259,7 +241,7 @@ export default function ProjectEditor() {
     };
 
     return (
-        <div style={{ display: 'flex', height: '100vh' }}>
+        <div style={{ display: 'flex', height: '100vh', position: 'relative' }}>
             <Sidebar
                 stars={stars}
                 form={form}
@@ -274,12 +256,20 @@ export default function ProjectEditor() {
                 onImportClick={triggerImport}
             />
             <div style={{ flex: 1 }}>
-                <Scene stars={stars} connections={connections} />
+                <Scene
+                    stars={stars}
+                    connections={connections}
+                    onStarHover={setHoveredStar}
+                />
             </div>
+            {hoveredStar && (
+                <StarInfoPanel star={hoveredStar} />
+            )}
             {saveDialogOpen && (
                 <SaveDialog
                     onClose={() => setSaveDialogOpen(false)}
                     onSave={handleSave}
+                    isAuthenticated={!!user}
                 />
             )}
             <input

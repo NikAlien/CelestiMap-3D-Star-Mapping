@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function SaveDialog({ onClose, onSave }) {
+export default function SaveDialog({ onClose, onSave, isAuthenticated }) {
     const [projectName, setProjectName] = useState('MyConstellation');
     const [format, setFormat] = useState('json');
     const [visibility, setVisibility] = useState('private');
@@ -28,28 +28,24 @@ export default function SaveDialog({ onClose, onSave }) {
 
                     <label>
                         Format:
-                        <select
-                            value={format}
-                            onChange={(e) => setFormat(e.target.value)}
-                        >
+                        <select value={format} onChange={e => setFormat(e.target.value)}>
                             <option value="json">JSON</option>
                             <option value="csv">CSV</option>
-                            <option value="online">Online</option>
+                            {isAuthenticated && <option value="online">Online</option>}
                         </select>
                     </label>
 
-                    {/*{format === 'online' && (*/}
-                    {/*    <label>*/}
-                    {/*        Visibility:*/}
-                    {/*        <select*/}
-                    {/*            value={visibility}*/}
-                    {/*            onChange={(e) => setVisibility(e.target.value)}*/}
-                    {/*        >*/}
-                    {/*            <option value="private">Private</option>*/}
-                    {/*            <option value="public">Public</option>*/}
-                    {/*        </select>*/}
-                    {/*    </label>*/}
-                    {/*)}*/}
+                    {format === 'online' && (
+                        <label>
+                            Visibility:
+                            <select
+                                value={visibility}
+                                onChange={(e) => setVisibility(e.target.value)}>
+                                <option value="private">Private</option>
+                                <option value="public">Public</option>
+                            </select>
+                        </label>
+                    )}
 
                     <div className="button-group">
                         <button type="button" onClick={onClose}>
