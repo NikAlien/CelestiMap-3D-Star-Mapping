@@ -100,16 +100,17 @@ const Gallery = () => {
                     <div className="project-grid">
                         {projects.map(project => (
                             <div
-                                key={project.projectId}
+                                key={project.id}
                                 className="project-card"
-                                onClick={() => navigate(`/project/${project.projectId}`)}
+                                onClick={() => navigate(`/project/${project.id}`)}
                             >
                                 <div className="card-header">
                                     <h3>{project.name}</h3>
                                     {project.isPublic && <span className="public-badge">Public</span>}
                                 </div>
                                 <div className="card-meta">
-                                    <span className="date">{formatDate(project.createdAt)}</span>
+                                    <span className="creator">By: {project.userName ?? 'Unknown'}</span>
+                                    <span className="date">{formatDate(project.createdAT)}</span>
                                 </div>
                                 <div className="card-stats">
                                     <span>{project.stars?.length ?? 0} stars</span>
@@ -118,7 +119,7 @@ const Gallery = () => {
                                 {user && (
                                     <button className="favorite-btn" onClick={(e) => {
                                         e.stopPropagation();
-                                        handleAddFavorite(project.projectId);}}>
+                                        handleAddFavorite(project.id);}}>
                                         ♡ Favorite
                                     </button>
                                 )}

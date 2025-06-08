@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import '../Styles/Favorite.css';
 import Navbar from "../Components/Navbar.jsx";
-import {fetchMyProjects, removeMyProject} from "../Context/API.js";
+import {fetchMyProjects} from "../Context/API.js";
 
 const MyProjects = () => {
     const [projects, setProjects] = useState([]);

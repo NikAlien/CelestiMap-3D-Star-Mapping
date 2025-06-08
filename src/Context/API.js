@@ -12,7 +12,7 @@ export const fetchPublicProjects = (params) =>
     api.get('/project/public', { params });
 
 export const addFavorite = (token, projectId) =>
-    api.post(`/project/${projectId}/favorite`, {}, { headers: { Authorization: `Bearer ${token}` } });
+    api.post(`/favorite/${projectId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
 
 export const fetchMyProjects = (token) =>
     api.get('/project/myProjects', { headers: { Authorization: `Bearer ${token}` } });
