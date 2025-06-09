@@ -92,14 +92,14 @@
 }
 
 .project-grid {
-    display: flex;
-    justify-content: center;
+    display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
     padding: 2rem;
     max-width: 1400px;
     margin: 0 auto;
 }
+
 
 .project-card {
     background: rgba(23, 42, 69, 0.6);

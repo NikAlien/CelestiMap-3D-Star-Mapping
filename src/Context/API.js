@@ -37,3 +37,6 @@ export const updateProject = (token, projectData) =>
 
 export const getProject = (token, projectId) =>
     api.get(`/project/${projectId}`, { headers: { Authorization: `Bearer ${token}` } });
+
+export const getProjectView = (token, projectId) =>
+    api.get(`/project/view/${projectId}`);
