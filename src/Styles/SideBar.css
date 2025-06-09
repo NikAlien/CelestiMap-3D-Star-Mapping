@@ -1,0 +1,140 @@
+/* ========== Sidebar.css ========== */
+.sidebar {
+    padding: 1rem;
+    width: 300px;
+    background: linear-gradient(135deg, #0a192f 0%, #112240 100%);
+    color: #e6f1ff;
+    min-height: 100vh;
+    font-family: sans-serif;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.sidebar h3 {
+    font-size: 1.8rem;
+    color: #64ffda;
+    border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.sidebar-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem
+}
+
+.save-btn,
+.import-btn {
+    margin-top: 1rem;
+    padding: 0.5rem;
+}
+
+.star-item {
+    background: rgba(23, 42, 69, 0.6);
+    border: 1px solid rgba(100, 255, 218, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.star-item:hover {
+    border-color: #64ffda;
+    box-shadow: 0 4px 12px rgba(2, 12, 27, 0.5);
+}
+
+.star-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.star-header strong {
+    font-size: 1.2rem;
+    color: #e6f1ff;
+}
+
+.star-item p {
+    color: #a8b2d1;
+    margin: 0.2rem 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.edit-btn-side,
+.delete-star-btn {
+    background: rgba(17, 34, 64, 0.5);
+    border: 1px solid rgba(100, 255, 218, 0.5);
+    color: #64ffda;
+    padding: 0.4rem 0.75rem;
+    margin-left: 0.4rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.edit-btn:hover,
+.delete-star-btn:hover {
+    background: rgba(100, 255, 218, 0.1);
+}
+
+.connections-list {
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.connection-item {
+    background: rgba(100, 255, 218, 0.1);
+    color: #64ffda;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+}
+
+.connection-delete-btn {
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    margin-left: 0.4rem;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.connect-controls {
+    margin-top: 0.5rem;
+}
+
+.connect-controls select {
+    width: 100%;
+    padding: 0.5rem;
+    background: rgba(17, 34, 64, 0.5);
+    border: 1px solid rgba(100, 255, 218, 0.1);
+    color: #e6f1ff;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+button {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.75rem;
+    background: #0a192f;
+    color: #64ffda;
+    border: 1px solid #64ffda;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: rgba(100, 255, 218, 0.1);
+}

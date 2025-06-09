@@ -1,6 +1,7 @@
 import {useAuth} from "../Context/AuthContext.jsx";
-import {useLocation, useNavigate} from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import {useEffect} from "react";
+import '../Styles/SideBar.css'
 
 export default function Sidebar({ stars, connections, form, setForm, handleAddStar, handleEditStar, handleDeleteStar, handleAddConnection,
                                     handleRemoveConnection, selectedStar, setSelectedStar, onSaveClick, onImportClick }) {
@@ -42,13 +43,13 @@ export default function Sidebar({ stars, connections, form, setForm, handleAddSt
     };
 
     return (
-        <div style={{ width: '300px', padding: '1rem', background: '#1a1a1a', color: 'white', overflowY: 'auto' }}>
+        <div className="sidebar">
             <button className="exit-btn" onClick={handleExit}>
                 Exit Project
             </button>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }}>
-                <button onClick={onImportClick} style={{ marginTop: '1rem', padding: '0.5rem' }}> Import</button>
-                <button onClick={onSaveClick} style={{ marginTop: '1rem', padding: '0.5rem' }}> Save Project</button>
+            <div className="sidebar-actions">
+                <button className="import-btn" onClick={onImportClick}>Import Project</button>
+                <button className="save-btn" onClick={onSaveClick}>Save Project</button>
             </div>
             <hr/>
             <h2>{selectedStar ? 'Edit Star' : 'Add Star'}</h2>
@@ -68,7 +69,7 @@ export default function Sidebar({ stars, connections, form, setForm, handleAddSt
                 <button onClick={handleAddStar}>Add Star</button>
             )}
             <hr />
-            <h3>Stars</h3>
+            <h3 className="sidebar-title">Stars</h3>
             {stars.map(s => {
                 const linkedStars = connections
                     .filter(([a, b]) => a === s.id || b === s.id)
@@ -77,7 +78,18 @@ export default function Sidebar({ stars, connections, form, setForm, handleAddSt
                     <div key={s.id} className="star-item">
                         <div className="star-header">
                             <strong>{s.name}</strong>
-                            <button onClick={() => handleDeleteStar(s.id)}>Delete Star</button>
+                            <div>
+                                <button className="edit-btn-side" onClick={() => {
+                                    setSelectedStar(s.id);
+                                    setForm({ name: s.name, x: s.position[0], y: s.position[1], z: s.position[2], color: s.color, additionalInfo: s.additionalInfo });
+                                }}
+                                >Edit</button>
+                                <button className="delete-star-btn" onClick={() => handleDeleteStar(s.id)}>Delete</button>
+                            </div>
+                        </div>
+                        <div className="star-details">
+                            <p><b>Coords:</b> {s.x} </p>
+                            <p><b>Color:</b> <span style={{ color: s.color }}>{s.color}</span></p>
                         </div>
                         <div className="connections-list">
                             {linkedStars.map(cid => {
@@ -85,7 +97,7 @@ export default function Sidebar({ stars, connections, form, setForm, handleAddSt
                                 return (
                                     <span key={cid} className="connection-item">
                                         {other?.name}
-                                        <button onClick={() => handleRemoveConnection(s.id, cid)}>×</button>
+                                        <button className="connection-delete-btn" onClick={() => handleRemoveConnection(s.id, cid)}>×</button>
                                     </span>
                                 );
                             })}
