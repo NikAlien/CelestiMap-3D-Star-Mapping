@@ -1,18 +1,56 @@
 import {useAuth} from "../Context/AuthContext.jsx";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
+import {useEffect} from "react";
 
 export default function Sidebar({ stars, form, setForm, handleAddStar, handleEditStar, handleDeleteStar, handleAddConnection, selectedStar, setSelectedStar, onSaveClick, onImportClick }) {
     const navigate = useNavigate();
+    const location = useLocation();
     const { user } = useAuth();
+
+    useEffect(() => {
+        window.history.pushState(null, "", window.location.href);
+
+        const handlePopState = () => {
+            if (window.confirm('All unsaved changes will be lost. Continue?')) {
+                navigate(user ? '/myProjects' : '/');
+            } else {
+                window.history.pushState(null, "", window.location.href);
+            }
+        };
+        window.addEventListener('popstate', handlePopState);
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, [navigate, user]);
+
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            e.preventDefault();
+            e.returnValue = '';
+            return '';
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
+
+    const handleExit = () => {
+        if (window.confirm('All unsaved changes will be lost. Continue?')) {
+            navigate(user ? '/myProjects' : '/');
+        }
+    };
 
     return (
         <div style={{ width: '300px', padding: '1rem', background: '#1a1a1a', color: 'white', overflowY: 'auto' }}>
-            <button className="exit-btn" onClick={() => {
-                if(window.confirm('All unsaved changes will be lost. Continue?')) {
-                    navigate(user ? '/myProjects' : '/');
-                }}}>
+            <button className="exit-btn" onClick={handleExit}>
                 Exit Project
             </button>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }}>
+                <button onClick={onImportClick} style={{ marginTop: '1rem', padding: '0.5rem' }}> Import</button>
+                <button onClick={onSaveClick} style={{ marginTop: '1rem', padding: '0.5rem' }}> Save Project</button>
+            </div>
+            <hr/>
             <h2>{selectedStar ? 'Edit Star' : 'Add Star'}</h2>
             <input placeholder="Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
             <input type="number" placeholder="X" value={form.x} onChange={e => setForm({ ...form, x: e.target.value })} />
@@ -49,12 +87,6 @@ export default function Sidebar({ stars, form, setForm, handleAddStar, handleEdi
                     </div>
                 </div>
             ))}
-
-            <hr />
-            <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }}>
-                <button onClick={onImportClick} style={{ marginTop: '1rem', padding: '0.5rem' }}> Import</button>
-                <button onClick={onSaveClick} style={{ marginTop: '1rem', padding: '0.5rem' }}> Save Project</button>
-            </div>
         </div>
     );
 }

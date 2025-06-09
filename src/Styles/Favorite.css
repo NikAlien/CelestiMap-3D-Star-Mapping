@@ -77,9 +77,26 @@
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-left: 0.5rem;
 }
 
 .edit-btn:hover {
     background: rgba(100, 255, 218, 0.2);
+}
+
+.public-badge {
+    background: rgba(100, 255, 218, 0.1);
+    color: #64ffda;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.private-badge {
+    background: rgba(255, 90, 90, 0.22);
+    color: #ff6b6b;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
 }

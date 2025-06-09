@@ -2,10 +2,10 @@ import {useState, useEffect, useRef} from 'react';
 import Scene from "../Components/Scene.jsx";
 import Sidebar from "../Components/Sidebar.jsx";
 import SaveDialog from "../Components/SaveDialog.jsx";
-import {saveProject, updateProject} from "../Context/API.js";
 import {useAuth} from "../Context/AuthContext.jsx";
 import {useNavigate} from "react-router-dom";
 import StarInfoPanel from "../Components/StarInfo.jsx";
+import { getProject, saveProject, updateProject } from '../Context/API.js';
 
 const LOCAL_STORAGE_KEY = 'starConstellationDataV2';
 
@@ -112,7 +112,7 @@ export default function ProjectEditor() {
             isPublic: (visibility === 'public'),
             createdAt: new Date().toISOString(),
             stars: stars.map(star => ({
-                id: star.id,
+                id: star.id || null,
                 name: star.name,
                 x: star.position[0],
                 y: star.position[1],
@@ -121,6 +121,7 @@ export default function ProjectEditor() {
                 additionalInfo: star.additionalInfo || ""
             })),
             connections: connections.map(([fromId, toId]) => ({
+                id: null,
                 startId: fromId,
                 endId: toId
             }))

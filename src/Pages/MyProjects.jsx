@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import '../Styles/Favorite.css';
 import Navbar from "../Components/Navbar.jsx";
-import {fetchMyProjects} from "../Context/API.js";
+import {fetchMyProjects, removeMyProject} from "../Context/API.js";
 
 const MyProjects = () => {
     const [projects, setProjects] = useState([]);
@@ -36,7 +36,7 @@ const MyProjects = () => {
         navigate(`/create?edit=${projectId}`);
     };
 
-    const removeMyProject = async (projectId) => {
+    const removeMyProjects = async (projectId) => {
         try {
             await removeMyProject(user.token, projectId);
             setProjects(projects.filter(fav => fav.projectId !== projectId));
@@ -49,12 +49,12 @@ const MyProjects = () => {
         <div className="favorites-container">
             <Navbar/>
             <div className="favorites-header">
-                <h1>Your Favorite Projects</h1>
-                <p>All the constellations you've marked as favorites</p>
+                <h1>Your Projects</h1>
+                <p>All the constellations you've created</p>
             </div>
 
             {loading ? (
-                <div className="loading-spinner">Loading favorites...</div>
+                <div className="loading-spinner">Loading projects...</div>
             ) : projects.length === 0 ? (
                 <div className="no-results">
                     <h3>No projects yet</h3>
@@ -71,6 +71,7 @@ const MyProjects = () => {
                             <div className="card-header">
                                 <h3>{favorite.name}</h3>
                                 {favorite.isPublic && <span className="public-badge">Public</span>}
+                                {!favorite.isPublic && <span className="private-badge">Private</span>}
                             </div>
                             <div className="card-meta">
                                 <span className="date">
