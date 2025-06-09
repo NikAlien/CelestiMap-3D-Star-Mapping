@@ -5,7 +5,7 @@ import SaveDialog from "../Components/SaveDialog.jsx";
 import {useAuth} from "../Context/AuthContext.jsx";
 import {useNavigate} from "react-router-dom";
 import StarInfoPanel from "../Components/StarInfo.jsx";
-import { getProject, saveProject, updateProject } from '../Context/API.js';
+import {exportProject, getProject, importProject, saveProject, updateProject} from '../Context/API.js';
 
 const LOCAL_STORAGE_KEY = 'starConstellationDataV2';
 
@@ -172,22 +172,15 @@ export default function ProjectEditor() {
                     setCurrentProjectId(newId);
                 }
                 navigate('/myProjects');
-            } else if (format === 'json') {
-                const dataStr = JSON.stringify({ stars, connections }, null, 2);
-                const blob = new Blob([dataStr], { type: 'application/json' });
+            } else if (format === 'json' || format === 'csv') {
+                // call back-end export endpoint
+                const blobData = await exportProject(projectData, format);
+                // Trigger download
+                const blob = new Blob([blobData], { type: format === 'json' ? 'application/json' : 'text/csv' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = `${projectName}.json`;
-                link.click();
-                URL.revokeObjectURL(url);
-            } else if (format === 'csv') {
-                const csv = stars.map(s => `${s.name},${s.position[0]},${s.position[1]},${s.position[2]},${s.color},"${s.additionalInfo || ''}"`).join('\n');
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `${projectName}.csv`;
+                link.download = `${projectName}.${format}`;
                 link.click();
                 URL.revokeObjectURL(url);
             }
@@ -197,73 +190,53 @@ export default function ProjectEditor() {
         }
     };
 
-    const handleImport = (event) => {
+    const handleImport = async (event) => {
         const file = event.target.files[0];
         if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const content = e.target.result;
-                let importedStars = [];
-                let importedConnections = [];
-
-                if (file.name.toLowerCase().endsWith('.json')) {
-                    const data = JSON.parse(content);
-                    importedStars = data.stars || [];
-                    importedConnections = data.connections || [];
-                } else if (file.name.toLowerCase().endsWith('.csv')) {
-                    const lines = content.split('\n').filter(line => line.trim());
-
-                    // Skip header
-                    for (let i = 1; i < lines.length; i++) {
-                        const values = lines[i].split(',');
-
-                        if (values[0] === 'Star') {
-                            importedStars.push({
-                                id: parseInt(values[1]),
-                                name: values[2],
-                                position: [
-                                    parseFloat(values[3]),
-                                    parseFloat(values[4]),
-                                    parseFloat(values[5])
-                                ],
-                                color: values[6]
-                            });
-                        } else if (values[0] === 'Connection') {
-                            // Extract connection IDs from correct positions
-                            const fromId = parseInt(values[3]);
-                            const toId = parseInt(values[4]);
-
-                            if (!isNaN(fromId) && !isNaN(toId)) {
-                                importedConnections.push([fromId, toId]);
-                            }
-                        }
-                    }
-                } else {
-                    throw new Error('Unsupported file format');
+        try {
+            const dto = await importProject(file);
+            // Map old IDs to new IDs based on nextId state, and append to existing
+            const oldToNewIdMap = {};
+            let currentNextId = nextId;
+            const newStars = dto.stars.map(s => {
+                const newId = currentNextId;
+                oldToNewIdMap[s.id] = newId;
+                currentNextId -= 1;
+                return {
+                    id: newId,
+                    name: s.name,
+                    position: [s.x, s.y, s.z],
+                    color: s.color,
+                    additionalInfo: s.additionalInfo
+                };
+            });
+            // Map connections using oldToNewIdMap; ignore if mapping missing
+            const newConnections = dto.connections.map(conn => {
+                const oldStart = conn.startId;
+                const oldEnd = conn.endId;
+                const newStart = oldToNewIdMap[oldStart];
+                const newEnd = oldToNewIdMap[oldEnd];
+                if (newStart !== undefined && newEnd !== undefined) {
+                    return [newStart, newEnd];
                 }
+                return null;
+            }).filter(pair => pair !== null);
 
-                // Validate imported data
-                if (!Array.isArray(importedStars) || !Array.isArray(importedConnections)) {
-                    throw new Error('Invalid file structure');
-                }
+            // Append to existing stars and connections
+            setStars(prev => [...prev, ...newStars]);
+            setConnections(prev => [...prev, ...newConnections]);
+            setNextId(currentNextId);
 
-                // Find max ID for nextId
-                const maxId = Math.max(0, ...importedStars.map(star => star.id));
-                setNextId(maxId + 1);
-
-                setStars(importedStars);
-                setConnections(importedConnections);
-                alert('Project imported successfully!');
-            } catch (error) {
-                console.error('Import error:', error);
-                alert('Failed to import file: ' + error.message);
+            if (dto.name) {
+                setProjectName(prevName => prevName ? prevName : dto.name);
             }
-        };
-
-        reader.readAsText(file);
-        event.target.value = null; // Reset input
+            alert('Imported stars and connections added to current project.');
+        } catch (error) {
+            console.error('Import error:', error);
+            alert('Failed to import file: ' + (error.message || 'Unknown error'));
+        } finally {
+            event.target.value = null;
+        }
     };
 
     const triggerImport = () => {

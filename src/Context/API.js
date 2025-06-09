@@ -40,3 +40,31 @@ export const getProject = (token, projectId) =>
 
 export const getProjectView = (token, projectId) =>
     api.get(`/project/view/${projectId}`);
+
+// Export project via back-end: returns a Blob.
+export const exportProject = async (projectData, format) => {
+    // projectData should match CompleteProjectDTO shape: { id, name, isPublic, createdAt, stars: [...], connections: [...] }
+    // Use responseType 'blob' to get binary data.
+    const params = { format };
+    const response = await api.post('/project/export', projectData, {
+        params,
+        responseType: 'blob',
+        headers: {
+            // No Authorization needed for guest import/export
+            'Content-Type': 'application/json'
+        }
+    });
+    return response.data; // Blob data
+};
+
+// Import project: upload file, receive CompleteProjectDTO JSON.
+export const importProject = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post('/project/import', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+    return response.data; // CompleteProjectDTO
+};
