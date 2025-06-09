@@ -10,7 +10,7 @@ import { getProject, saveProject, updateProject } from '../Context/API.js';
 const LOCAL_STORAGE_KEY = 'starConstellationDataV2';
 
 export default function ProjectEditor() {
-    const [nextId, setNextId] = useState(1);
+    const [nextId, setNextId] = useState(-1);
     const [stars, setStars] = useState([]);
     const [connections, setConnections] = useState([]);
     const [form, setForm] = useState({ name: '', x: 0, y: 0, z: 0, color: '#ffffff', additionalInfo: '' });
@@ -28,8 +28,8 @@ export default function ProjectEditor() {
         if (saved) {
             setStars(saved.stars || []);
             setConnections(saved.connections || []);
-            const maxId = Math.max(...saved.stars.map(star => star.id), 0);
-            setNextId(maxId + 1);
+            const minId = Math.min(...saved.stars.map(star => star.id), 0);
+            setNextId(minId - 1);
         }
     }, []);
 
@@ -77,7 +77,7 @@ export default function ProjectEditor() {
             additionalInfo: form.additionalInfo
         };
         setStars([...stars, newStar]);
-        setNextId(nextId + 1);
+        setNextId(nextId - 1);
         setForm({ name: '', x: 0, y: 0, z: 0, color: '#ffffff', additionalInfo: '' });
     };
 
@@ -91,21 +91,51 @@ export default function ProjectEditor() {
         setForm({ name: '', x: 0, y: 0, z: 0, color: '#ffffff', additionalInfo: '' });
     };
 
-    const handleDeleteStar = (id) => {
-        setStars(stars.filter(s => s.id !== id));
-        setConnections(connections.filter(pair => !pair.includes(id)));
-    };
+    useEffect(() => {
+        console.log("Updated stars list:", stars);
+    }, [stars]);
 
-    const handleAddConnection = (id1, id2) => {
-        if (id1 !== id2 && !connections.some(pair =>
-            (pair[0] === id1 && pair[1] === id2) ||
-            (pair[0] === id2 && pair[1] === id1)
-        )) {
-            setConnections([...connections, [id1, id2]]);
+    useEffect(() => {
+        console.log("Updated connections list:", connections);
+    }, [connections]);
+
+
+    const handleDeleteStar = (id) => {
+        // Remove the star
+        setStars(prev => prev.filter(s => s.id !== id));
+        // Remove all connections involving this star
+        setConnections(prev => prev.filter(([a, b]) => a !== id && b !== id));
+        // Clear selection if needed
+        if (selectedStar === id) {
+            setSelectedStar(null);
+            setForm({ name: '', x: 0, y: 0, z: 0, color: '#ffffff', additionalInfo: '' });
         }
     };
 
+    const handleAddConnection = (fromId, toId) => {
+        const a = Number(fromId);
+        const b = Number(toId);
+        if (a !== b && !connections.some(([x, y]) => (x === a && y === b) || (x === b && y === a))) {
+            setConnections(prev => [...prev, [a, b]]);
+        }
+    };
+
+    const handleRemoveConnection = (fromId, toId) => {
+        const a = Number(fromId);
+        const b = Number(toId);
+        setConnections(prev => prev.filter(([x, y]) => !( (x === a && y === b) || (x === b && y === a) )));
+    };
+
     const handleSave = async ({ projectName, format, visibility }) => {
+        const invalidConnections = connections.filter(([fromId, toId]) => {
+            return !stars.some(s => s.id === fromId) || !stars.some(s => s.id === toId);
+        });
+
+        if (invalidConnections.length > 0) {
+            alert(`Error: ${invalidConnections.length} connections reference deleted stars.`);
+            return;
+        }
+
         const projectData = {
             id: currentProjectId || null,
             name: projectName,
@@ -120,11 +150,17 @@ export default function ProjectEditor() {
                 color: star.color,
                 additionalInfo: star.additionalInfo || ""
             })),
-            connections: connections.map(([fromId, toId]) => ({
-                id: null,
-                startId: fromId,
-                endId: toId
-            }))
+            connections: connections.map(([fromId, toId]) => {
+                // Find the actual star objects (using temp IDs)
+                const fromStar = stars.find(s => s.id === fromId);
+                const toStar = stars.find(s => s.id === toId);
+
+                return {
+                    id: null,
+                    startId: fromStar?.id, // Use persistent backend ID
+                    endId: toStar?.id
+                };
+            }).filter(conn => conn.startId && conn.endId)
         };
 
         try {
@@ -247,6 +283,7 @@ export default function ProjectEditor() {
                 handleEditStar={handleEditStar}
                 handleDeleteStar={handleDeleteStar}
                 handleAddConnection={handleAddConnection}
+                handleRemoveConnection={handleRemoveConnection}
                 selectedStar={selectedStar}
                 setSelectedStar={setSelectedStar}
                 onSaveClick={() => setSaveDialogOpen(true)}

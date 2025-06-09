@@ -2,9 +2,9 @@ import {useAuth} from "../Context/AuthContext.jsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 
-export default function Sidebar({ stars, connections, form, setForm, handleAddStar, handleEditStar, handleDeleteStar, handleAddConnection, selectedStar, setSelectedStar, onSaveClick, onImportClick }) {
+export default function Sidebar({ stars, connections, form, setForm, handleAddStar, handleEditStar, handleDeleteStar, handleAddConnection,
+                                    handleRemoveConnection, selectedStar, setSelectedStar, onSaveClick, onImportClick }) {
     const navigate = useNavigate();
-    const location = useLocation();
     const { user } = useAuth();
 
     useEffect(() => {
@@ -69,27 +69,43 @@ export default function Sidebar({ stars, connections, form, setForm, handleAddSt
             )}
             <hr />
             <h3>Stars</h3>
-            {stars.map(s => (
-                <div key={s.id} style={{ marginBottom: '0.5rem' }}>
-                    <strong>{s.name}</strong> ({s.position.join(', ')})
-                    <div>
-                        <button onClick={() => {
-                            setSelectedStar(s.id);
-                            setForm({ name: s.name, x: s.position[0], y: s.position[1], z: s.position[2], color: s.color, additionalInfo: s.additionalInfo });
-                        }}>Edit</button>
-                        <button onClick={() => handleDeleteStar(s.id)}>Delete</button>
-                        <select onChange={e => handleAddConnection(s.id, e.target.value)} defaultValue="">
-                            <option value="">Connect to...</option>
-                            {stars.filter(o =>
-                                o.id !== s.id &&
-                                !connections.some(pair => pair[0] === s.id && pair[1] === o.id) // only block identical from→to
-                            ).map(o => (
-                                <option key={o.id} value={o.id}>{o.name}</option>
-                            ))}
-                        </select>
+            {stars.map(s => {
+                const linkedStars = connections
+                    .filter(([a, b]) => a === s.id || b === s.id)
+                    .map(([a, b]) => (a === s.id ? b : a));
+                return (
+                    <div key={s.id} className="star-item">
+                        <div className="star-header">
+                            <strong>{s.name}</strong>
+                            <button onClick={() => handleDeleteStar(s.id)}>Delete Star</button>
+                        </div>
+                        <div className="connections-list">
+                            {linkedStars.map(cid => {
+                                const other = stars.find(x => x.id === cid);
+                                return (
+                                    <span key={cid} className="connection-item">
+                                        {other?.name}
+                                        <button onClick={() => handleRemoveConnection(s.id, cid)}>×</button>
+                                    </span>
+                                );
+                            })}
+                        </div>
+                        <div className="connect-controls">
+                            <select
+                                onChange={e => handleAddConnection(s.id, e.target.value)}
+                                defaultValue=""
+                            >
+                                <option value="">Connect to...</option>
+                                {stars
+                                    .filter(x => x.id !== s.id && !linkedStars.includes(x.id))
+                                    .map(x => (
+                                        <option key={x.id} value={x.id}>{x.name}</option>
+                                    ))}
+                            </select>
+                        </div>
                     </div>
-                </div>
-            ))}
+                );
+            })}
         </div>
     );
 }
