@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-export default function SaveDialog({ onClose, onSave, isAuthenticated }) {
-    const [projectName, setProjectName] = useState('MyConstellation');
+export default function SaveDialog({ onClose, onSave, projectNameUpdate, isAuthenticated }) {
+    const [projectName, setProjectName] = useState(projectNameUpdate);
     const [format, setFormat] = useState('json');
     const [visibility, setVisibility] = useState('private');
 

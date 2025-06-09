@@ -3,7 +3,7 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #000;
   color: white;
-  overflow: hidden;
+  overflow: auto;
 }
 
 input, button, select {
@@ -38,7 +38,7 @@ button:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .modal {
@@ -47,7 +47,9 @@ button:hover {
   border-radius: 8px;
   width: 400px;
   max-width: 90%;
+  position: relative;
   color: black;
+  z-index: 10000;
 }
 
 .modal label {

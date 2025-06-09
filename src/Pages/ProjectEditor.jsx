@@ -21,6 +21,7 @@ export default function ProjectEditor() {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [hoveredStar, setHoveredStar] = useState(null);
+    const [projectNameUpdate, setProjectName] = useState("MyConstellation");
 
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
@@ -54,11 +55,10 @@ export default function ProjectEditor() {
                         additionalInfo: star.additionalInfo
                     })));
 
-                    setConnections(project.connections.map(conn =>
-                        [conn.startId, conn.endId]
-                    ));
+                    setConnections(project.connections.map(conn => [conn.startId, conn.endId]));
 
                     setCurrentProjectId(project.id);
+                    setProjectName(project.name);
                 } catch (error) {
                     console.error('Error loading project:', error);
                 }
@@ -128,12 +128,6 @@ export default function ProjectEditor() {
         };
 
         try {
-            if (format === 'online' && !user) {
-                alert('You must be logged in to save online!');
-                return;
-            }
-
-
             if (format === 'online') {
                 if (currentProjectId) {
                     await updateProject(user.token, projectData);
@@ -162,6 +156,7 @@ export default function ProjectEditor() {
                 URL.revokeObjectURL(url);
             }
         } catch (err) {
+            console.error('Save failed:', err);
             alert('Save failed: ' + (err.message || 'Unknown error'));
         }
     };
@@ -245,6 +240,7 @@ export default function ProjectEditor() {
         <div style={{ display: 'flex', height: '100vh', position: 'relative' }}>
             <Sidebar
                 stars={stars}
+                connections={connections}
                 form={form}
                 setForm={setForm}
                 handleAddStar={handleAddStar}
@@ -270,6 +266,7 @@ export default function ProjectEditor() {
                 <SaveDialog
                     onClose={() => setSaveDialogOpen(false)}
                     onSave={handleSave}
+                    projectNameUpdate={projectNameUpdate}
                     isAuthenticated={!!user}
                 />
             )}

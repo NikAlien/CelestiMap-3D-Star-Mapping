@@ -2,7 +2,7 @@ import {useAuth} from "../Context/AuthContext.jsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 
-export default function Sidebar({ stars, form, setForm, handleAddStar, handleEditStar, handleDeleteStar, handleAddConnection, selectedStar, setSelectedStar, onSaveClick, onImportClick }) {
+export default function Sidebar({ stars, connections, form, setForm, handleAddStar, handleEditStar, handleDeleteStar, handleAddConnection, selectedStar, setSelectedStar, onSaveClick, onImportClick }) {
     const navigate = useNavigate();
     const location = useLocation();
     const { user } = useAuth();
@@ -80,7 +80,10 @@ export default function Sidebar({ stars, form, setForm, handleAddStar, handleEdi
                         <button onClick={() => handleDeleteStar(s.id)}>Delete</button>
                         <select onChange={e => handleAddConnection(s.id, e.target.value)} defaultValue="">
                             <option value="">Connect to...</option>
-                            {stars.filter(o => o.id !== s.id).map(o => (
+                            {stars.filter(o =>
+                                o.id !== s.id &&
+                                !connections.some(pair => pair[0] === s.id && pair[1] === o.id) // only block identical from→to
+                            ).map(o => (
                                 <option key={o.id} value={o.id}>{o.name}</option>
                             ))}
                         </select>

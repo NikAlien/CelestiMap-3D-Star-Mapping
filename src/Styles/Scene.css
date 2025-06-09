@@ -8,6 +8,7 @@
     pointer-events: none;
     transform: translateY(0);
     transition: transform 0.2s ease;
+    z-index: 1;
 }
 
 .star-info-panel {
@@ -15,7 +16,6 @@
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1000;
     background: rgba(23, 42, 69, 0.95);
     border: 1px solid #64ffda;
     border-radius: 12px;
