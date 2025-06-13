@@ -1,12 +1,24 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import '../Styles/Dashboard.css';
 import Navbar from "../Components/Navbar.jsx";
+import {fetchApod} from "../Context/API.js";
+import ApodModel from "../Components/ApodModel.jsx";
 
 const Dashboard = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const [apodData, setApodData] = useState(null);
+
+    const handleShowApod = async () => {
+        try {
+            const resp = await fetchApod();
+            setApodData(resp.data);
+        } catch (e) {
+            console.error("Failed to load APOD", e);
+        }
+    };
 
     return (
         <div className="dashboard-container">
@@ -17,13 +29,23 @@ const Dashboard = () => {
 
                 <div className="dashboard-actions">
                     {user ? (
-                        <button className="dashboard-button" onClick={() => navigate('/create')}>
-                            Create New Project
-                        </button>
+                        <>
+                            <button className="dashboard-button" onClick={() => navigate('/create')}>
+                                Create New Project
+                            </button>
+                            <button className="dashboard-button" onClick={handleShowApod}>
+                                APOD
+                            </button>
+                        </>
                     ) : (
-                        <button className="dashboard-button" onClick={() => navigate('/create')}>
-                            Start Your Journey
-                        </button>
+                        <>
+                            <button className="dashboard-button" onClick={() => navigate('/create')}>
+                                Start Your Journey
+                            </button>
+                            <button className="dashboard-button" onClick={handleShowApod}>
+                                APOD
+                            </button>
+                        </>
                     )}
                 </div>
             </div>
@@ -42,6 +64,7 @@ const Dashboard = () => {
                     <p>Discover public projects from other astronomers</p>
                 </div>
             </div>
+            <ApodModel data={apodData} onClose={() => setApodData(null)} />
         </div>
     );
 };

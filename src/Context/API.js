@@ -68,3 +68,8 @@ export const importProject = async (file) => {
     });
     return response.data; // CompleteProjectDTO
 };
+
+// Fetch NASA APOD
+export const fetchApod = () =>
+    api.get('/apod');
+
