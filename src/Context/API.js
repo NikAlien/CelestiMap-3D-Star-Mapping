@@ -23,8 +23,8 @@ export const removeMyProject = (token, projectId) =>
 export const loginUser = (username, password) =>
     api.post('/auth/login', { username, password });
 
-export const registerUser = (username, password) =>
-    api.post('/auth/register', { username, password });
+export const registerUser = (username, password, email) =>
+    api.post('/auth/register', { username, password, email });
 
 export const getUserInfo = (token) =>
     api.get('/auth/me', { headers: { Authorization: `Bearer ${token}` } });

@@ -7,6 +7,7 @@ import {registerUser} from "../Context/API.js";
 const Register = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [email, setEmail] = useState("");
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const { login } = useAuth();
@@ -20,7 +21,7 @@ const Register = () => {
         if (password.length < 6) return setError('Password must be at least 6 characters');
 
         try {
-            const response = await registerUser(username, password);
+            const response = await registerUser(username, password, email);
             const { token } = response.data;
             login(token);
             navigate('/');
@@ -40,6 +41,17 @@ const Register = () => {
                 {error && <p className="auth-error">{error}</p>}
 
                 <form onSubmit={handleSubmit}>
+                    <div className="auth-form-group">
+                        <label className="auth-label">Email</label>
+                        <input
+                            type="text"
+                            className="auth-input"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Write your email"
+                            required
+                        />
+                    </div>
                     <div className="auth-form-group">
                         <label className="auth-label">Username</label>
                         <input
