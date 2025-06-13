@@ -25,15 +25,15 @@
     right: 0.5rem;
     max-width: 5%;
     background: transparent;
-    border: none;
     font-size: 1.5rem;
     color: #64ffda;
     cursor: pointer;
+    border: 1px solid #64ffda;
 }
 
 .apod-close:hover {
-    background: transparent;
-    color: #e6f1ff;
+    background: #64ffda;
+    color: rgb(0, 0, 0);
 }
 
 .apod-container img {
@@ -48,4 +48,26 @@
 
 h2 {
     color: #64ffda;
+}
+
+.apod-subscribe {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    max-width: 30%;
+    background: rgba(255, 90, 90, 0.2);
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.apod-subscribe:hover {
+    background-color: #444;
+}
+
+.apod-subscribe.subscribed {
+    background: rgba(100, 255, 218, 0.1);
+    color: #64ffda;
+    border: 1px solid #64ffda;
 }

@@ -70,6 +70,11 @@ export const importProject = async (file) => {
 };
 
 // Fetch NASA APOD
-export const fetchApod = () =>
-    api.get('/apod');
+export const fetchApod = () => api.get('/apod');
+export const subscribeApod = (token) =>
+    api.post('/apod/subscribe', null, { headers: { Authorization: `Bearer ${token}` } });
+export const unsubscribeApod = (token) =>
+    api.delete('/apod/unsubscribe', { headers: { Authorization: `Bearer ${token}` } });
+export const checkSubscribedApod = (token) =>
+    api.get('/apod/subscribed', { headers: { Authorization: `Bearer ${token}` } });
 
