@@ -22,6 +22,9 @@ export default function Navbar({}) {
                         <button className="nav-button" onClick={() => navigate('/favorites')}>
                             Favorites
                         </button>
+                        <button className="nav-button" onClick={() => navigate('/neos')}>
+                            NEO
+                        </button>
                         <button className="nav-button" onClick={() => navigate('/gallery')}>
                             Gallery
                         </button>
@@ -36,6 +39,9 @@ export default function Navbar({}) {
                         </button>
                         <button className="nav-button" onClick={() => navigate('/register')}>
                             Register
+                        </button>
+                        <button className="nav-button" onClick={() => navigate('/neos')}>
+                            NEO
                         </button>
                         <button className="nav-button" onClick={() => navigate('/gallery')}>
                             Gallery

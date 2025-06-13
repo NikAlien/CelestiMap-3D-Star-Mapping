@@ -8,6 +8,7 @@ import Gallery from "./Pages/Gallery.jsx";
 import FavoriteList from "./Pages/FavoriteList.jsx";
 import MyProjects from "./Pages/MyProjects.jsx";
 import ProjectViewer from "./Pages/ProjectView.jsx";
+import NeoPage from "./Pages/NeoViewer.jsx";
 
 function App() {
     const { user } = useAuth();
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/favorites" element={<FavoriteList />} />
                 <Route path="/myProjects" element={<MyProjects />} />
                 <Route path="/create" element={<ProjectEditor />} />
+                <Route path="/neos" element={<NeoPage />} />
                 <Route path="/project/:projectId" element={<ProjectViewer />} />
             </Routes>
         </Router>

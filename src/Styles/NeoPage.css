@@ -1,0 +1,48 @@
+.neo-container {
+    display: flex;
+    height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.neo-sidebar {
+    width: 30%;
+    background-color: #1f1f1f;
+    color: white;
+    padding: 1rem;
+    overflow-y: auto;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.neo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.back-button {
+    background-color: #444;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.7rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.back-button:hover {
+    background-color: #666;
+}
+
+.neo-visualization {
+    flex: 1;
+    background-color: black;
+    position: relative;
+}
+
+.neo-placeholder {
+    padding: 2rem;
+    color: white;
+    font-size: 1.2rem;
+    text-align: center;
+}
