@@ -8,11 +8,9 @@ import Gallery from "./Pages/Gallery.jsx";
 import FavoriteList from "./Pages/FavoriteList.jsx";
 import MyProjects from "./Pages/MyProjects.jsx";
 import ProjectViewer from "./Pages/ProjectView.jsx";
-import NeoPage from "./Pages/NeoViewer.jsx";
+import NeoPage from "./Pages/NeoPage.jsx";
 
 function App() {
-    const { user } = useAuth();
-
     return (
         <Router>
             <Routes>

@@ -1,48 +1,101 @@
-.neo-container {
-    display: flex;
-    height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* frontend/src/pages/NeoPage.css */
+
+.neo-page-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a192f 0%, #112240 100%);
+    color: #e6f1ff;
+    padding: 0rem;
+    box-sizing: border-box;
 }
 
-.neo-sidebar {
-    width: 30%;
-    background-color: #1f1f1f;
-    color: white;
-    padding: 1rem;
-    overflow-y: auto;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+.neo-page-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 2rem;
 }
-
-.neo-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.neo-page-header h1 {
+    font-size: 2.5rem;
+    color: #64ffda;
+    margin-bottom: 0.5rem;
+}
+.neo-page-header p {
+    font-size: 1.1rem;
+    color: #a8b2d1;
     margin-bottom: 1rem;
 }
 
-.back-button {
-    background-color: #444;
-    color: white;
-    border: none;
-    padding: 0.4rem 0.7rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9rem;
-}
-
-.back-button:hover {
-    background-color: #666;
-}
-
-.neo-visualization {
-    flex: 1;
-    background-color: black;
-    position: relative;
-}
-
-.neo-placeholder {
-    padding: 2rem;
-    color: white;
-    font-size: 1.2rem;
+/* Loading and error messages */
+.neo-loading,
+.neo-error {
     text-align: center;
+    margin: 2rem 0;
+    color: #a8b2d1;
+}
+.neo-error {
+    color: #ff6b6b;
+}
+
+/* Select container */
+.neo-select-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+.neo-select-container label {
+    color: #e6f1ff;
+    font-size: 1rem;
+}
+.neo-select-container select {
+    margin-left: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: rgba(17, 34, 64, 0.5);
+    border: 1px solid rgba(100, 255, 218, 0.1);
+    border-radius: 4px;
+    color: #e6f1ff;
+    font-size: 1rem;
+    min-width: 240px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background 0.3s ease;
+}
+.neo-select-container select:focus {
+    outline: none;
+    border-color: #64ffda;
+    box-shadow: 0 0 0 3px rgba(100, 255, 218, 0.1);
+}
+.neo-select-container select:hover {
+    background: rgba(23, 42, 69, 0.6);
+}
+
+/* Visualization wrapper */
+.neo-viz-wrapper {
+    width: 100%;
+    height: 600px;
+    border: 1px solid rgba(100, 255, 218, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(2, 12, 27, 0.7);
+    background: rgba(17, 34, 64, 0.3);
+}
+
+/* Responsive tweak */
+@media (max-width: 768px) {
+    .neo-page-container {
+        padding: 1rem;
+    }
+    .neo-select-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .neo-select-container label {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .neo-select-container select {
+        margin: 0.5rem 0 0 0;
+        width: 100%;
+    }
+    .neo-viz-wrapper {
+        height: 400px;
+    }
 }

@@ -78,3 +78,11 @@ export const unsubscribeApod = (token) =>
 export const checkSubscribedApod = (token) =>
     api.get('/apod/subscribed', { headers: { Authorization: `Bearer ${token}` } });
 
+export const fetchUpcomingNeos = (startDate, endDate) => {
+    // If you want optional params:
+    const params = {};
+    if (startDate) params.start = startDate;  // in 'YYYY-MM-DD' format
+    if (endDate) params.end = endDate;
+    // Full URL:
+    return axios.get('http://localhost:8080/api/neos/upcoming', { params });
+};
