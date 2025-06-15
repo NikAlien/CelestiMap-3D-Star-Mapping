@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useAuth } from "./Context/AuthContext.jsx";
 import Dashboard from "./Pages/Dashboard.jsx";
 import Login from "./Pages/LogIn.jsx";
 import Register from "./Pages/Register.jsx";

@@ -101,11 +101,9 @@ export default function ProjectEditor() {
 
 
     const handleDeleteStar = (id) => {
-        // Remove the star
         setStars(prev => prev.filter(s => s.id !== id));
-        // Remove all connections involving this star
         setConnections(prev => prev.filter(([a, b]) => a !== id && b !== id));
-        // Clear selection if needed
+
         if (selectedStar === id) {
             setSelectedStar(null);
             setForm({ name: '', x: 0, y: 0, z: 0, color: '#ffffff', additionalInfo: '' });
@@ -151,13 +149,12 @@ export default function ProjectEditor() {
                 additionalInfo: star.additionalInfo || ""
             })),
             connections: connections.map(([fromId, toId]) => {
-                // Find the actual star objects (using temp IDs)
                 const fromStar = stars.find(s => s.id === fromId);
                 const toStar = stars.find(s => s.id === toId);
 
                 return {
                     id: null,
-                    startId: fromStar?.id, // Use persistent backend ID
+                    startId: fromStar?.id,
                     endId: toStar?.id
                 };
             }).filter(conn => conn.startId && conn.endId)
@@ -173,9 +170,7 @@ export default function ProjectEditor() {
                 }
                 navigate('/myProjects');
             } else if (format === 'json' || format === 'csv') {
-                // call back-end export endpoint
                 const blobData = await exportProject(projectData, format);
-                // Trigger download
                 const blob = new Blob([blobData], { type: format === 'json' ? 'application/json' : 'text/csv' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -195,7 +190,6 @@ export default function ProjectEditor() {
         if (!file) return;
         try {
             const dto = await importProject(file);
-            // Map old IDs to new IDs based on nextId state, and append to existing
             const oldToNewIdMap = {};
             let currentNextId = nextId;
             const newStars = dto.stars.map(s => {
@@ -210,7 +204,6 @@ export default function ProjectEditor() {
                     additionalInfo: s.additionalInfo
                 };
             });
-            // Map connections using oldToNewIdMap; ignore if mapping missing
             const newConnections = dto.connections.map(conn => {
                 const oldStart = conn.startId;
                 const oldEnd = conn.endId;
@@ -222,7 +215,6 @@ export default function ProjectEditor() {
                 return null;
             }).filter(pair => pair !== null);
 
-            // Append to existing stars and connections
             setStars(prev => [...prev, ...newStars]);
             setConnections(prev => [...prev, ...newConnections]);
             setNextId(currentNextId);

@@ -91,7 +91,7 @@ const ProjectViewer = () => {
                         </p>
                     )}
                 </div>
-                <div style={{ width: '5rem' }} /> {/* spacer to match button width */}
+                <div style={{ width: '5rem' }} />
             </div>
 
             <div style={{ flex: 1, position: 'relative' }}>

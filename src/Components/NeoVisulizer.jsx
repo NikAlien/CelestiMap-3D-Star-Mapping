@@ -1,4 +1,3 @@
-// frontend/src/components/NeoVisualization.jsx
 import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Stars as StarBG, Html, Line } from '@react-three/drei';
@@ -7,12 +6,11 @@ import '../Styles/NeoVisualizer.css';
 
 const scaleSize = (meters) => Math.cbrt(meters) * 0.5;
 
-// Earth component without textures
 function Earth({ radius = 0.5 }) {
     const meshRef = useRef();
     useFrame(() => {
         if (meshRef.current) {
-            meshRef.current.rotation.y += 0.001; // slow spin
+            meshRef.current.rotation.y += 0.001;
         }
     });
     return (
@@ -26,7 +24,6 @@ function Earth({ radius = 0.5 }) {
     );
 }
 
-// Rotating & clickable asteroid
 function RotatingAsteroid({ pos, radius, name, onClick, onHover, highlight }) {
     const meshRef = useRef();
     useFrame(() => {
@@ -56,7 +53,6 @@ function RotatingAsteroid({ pos, radius, name, onClick, onHover, highlight }) {
     );
 }
 
-// Axes helper
 function AxesHelper({ size = 1 }) {
     const group = useRef();
     useEffect(() => {
@@ -68,7 +64,6 @@ function AxesHelper({ size = 1 }) {
     return <group ref={group} />;
 }
 
-// TimeUpdater: runs inside Canvas to update timeT in parent
 function TimeUpdater({ playing, speed, setTimeT }) {
     useFrame((state, delta) => {
         if (playing) {
@@ -88,12 +83,10 @@ export default function NeoVisualization({ neo }) {
     const [showInfo, setShowInfo] = useState(false);
     const [hovered, setHovered] = useState(false);
 
-    // Time slider state
     const [timeT, setTimeT] = useState(0);
     const [playing, setPlaying] = useState(false);
     const [speed, setSpeed] = useState(0.005);
 
-    // Compute start/end positions along x-axis
     const missKm = neo.missDistanceKm;
     const startDistance = missKm * 5;
     const toScene = (km) => km / 1e6;
@@ -108,7 +101,6 @@ export default function NeoVisualization({ neo }) {
         [neo]
     );
 
-    // Reset when neo changes
     useEffect(() => {
         setTimeT(0);
         setPlaying(false);
@@ -118,11 +110,9 @@ export default function NeoVisualization({ neo }) {
     return (
         <div className="neo-container">
             <Canvas shadows camera={{ position: [2, 2, 2], fov: 50 }}>
-                {/* Lights and background */}
                 <ambientLight intensity={0.4} />
                 <pointLight position={[10, 10, 10]} intensity={1.5} castShadow />
                 <StarBG radius={100} depth={60} count={6000} factor={4.5} fade />
-                {/* Helpers and objects */}
                 <AxesHelper size={1} />
                 <Earth radius={0.5} />
                 <Line
@@ -142,18 +132,15 @@ export default function NeoVisualization({ neo }) {
                     highlight={hovered}
                 />
                 <OrbitControls enableZoom enableRotate enablePan />
-                {/* TimeUpdater must be inside Canvas */}
                 <TimeUpdater playing={playing} speed={speed} setTimeT={setTimeT} />
             </Canvas>
 
-            {/* Overlay controls */}
             <div className="controls-overlay">
                 <button
                     onClick={() => {
                         if (timeT >= 1) setTimeT(0);
                         setPlaying(prev => !prev);
-                    }}
-                >
+                    }}>
                     {playing ? 'Pause' : timeT >= 1 ? 'Replay' : 'Play'}
                 </button>
                 <label className="control-group">
@@ -185,20 +172,14 @@ export default function NeoVisualization({ neo }) {
                 </label>
             </div>
 
-            {/* Info panel */}
             {showInfo && (
                 <div className="info-panel">
                     <h3 className="info-title">{neo.name}</h3>
-                    <p>
-                        <strong>Diameter:</strong>{' '}
+                    <p><strong>Diameter:</strong>{' '}
                         {(neo.diameterMinMeters / 1e3).toFixed(2)}–{(neo.diameterMaxMeters / 1e3).toFixed(2)} km
                     </p>
-                    <p>
-                        <strong>Miss Distance:</strong> {Math.round(neo.missDistanceKm).toLocaleString()} km
-                    </p>
-                    <p>
-                        <strong>Close Approach Date:</strong> {neo.closeApproachDate}
-                    </p>
+                    <p><strong>Miss Distance:</strong> {Math.round(neo.missDistanceKm).toLocaleString()} km</p>
+                    <p><strong>Close Approach Date:</strong> {neo.closeApproachDate}</p>
                     <p>
                         <a href={neo.nasaJplUrl} target="_blank" rel="noreferrer" className="info-link">
                             More details (JPL)
@@ -210,7 +191,6 @@ export default function NeoVisualization({ neo }) {
                 </div>
             )}
 
-            {/* Scale legend */}
             <div className="scale-legend">
                 Note: Sizes/distances are not to scale. Distances scaled by 1e6×, sizes by cube root for visibility.
             </div>

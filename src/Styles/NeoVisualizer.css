@@ -1,6 +1,3 @@
-/* frontend/src/components/NeoVisualization.css */
-
-/* Container with dark gradient background */
 .neo-container {
     position: relative;
     width: 100%;
@@ -10,7 +7,6 @@
     overflow: hidden;
 }
 
-/* Labels over meshes */
 .neo-label {
     color: #e6f1ff;
     text-shadow: 0 0 3px #000;
@@ -18,7 +14,6 @@
     white-space: nowrap;
 }
 
-/* Controls overlay at bottom center */
 .controls-overlay {
     position: absolute;
     bottom: 10px;
@@ -35,7 +30,6 @@
     flex-wrap: wrap;
 }
 
-/* Buttons in controls */
 .controls-overlay button {
     padding: 0.4rem 0.8rem;
     background: #0a192f;
@@ -50,7 +44,6 @@
     transform: translateY(-2px);
 }
 
-/* Grouping label+input */
 .control-group {
     display: flex;
     align-items: center;
@@ -60,7 +53,6 @@
     cursor: pointer;
 }
 
-/* Style for range inputs: transparent track with subtle border */
 .control-group input[type="range"] {
     -webkit-appearance: none;
     background: rgba(17, 34, 64, 0.5);
@@ -68,6 +60,7 @@
     border-radius: 4px;
     height: 4px;
 }
+
 .control-group input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 12px;
@@ -77,6 +70,7 @@
     cursor: pointer;
     border: none;
 }
+
 .control-group input[type="range"]::-moz-range-thumb {
     width: 12px;
     height: 12px;
@@ -86,7 +80,6 @@
     border: none;
 }
 
-/* Info panel when asteroid clicked */
 .info-panel {
     position: absolute;
     top: 20px;
@@ -102,14 +95,12 @@
     box-shadow: 0 4px 10px rgba(2, 12, 27, 0.7);
 }
 
-/* Info title */
 .info-title {
     margin: 0 0 0.5rem;
     color: #64ffda;
     font-size: 1.2rem;
 }
 
-/* Links in info panel */
 .info-link {
     color: #64ffda;
     text-decoration: none;
@@ -118,7 +109,6 @@
     text-decoration: underline;
 }
 
-/* Close button */
 .info-close-btn {
     margin-top: 0.5rem;
     padding: 0.4rem 0.8rem;
@@ -133,7 +123,6 @@
     background: rgba(100, 255, 218, 0.1);
 }
 
-/* Scale legend at top-left */
 .scale-legend {
     position: absolute;
     top: 20px;
@@ -148,7 +137,6 @@
     border: 1px solid rgba(100, 255, 218, 0.1);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .controls-overlay {
         flex-direction: column;

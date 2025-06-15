@@ -62,11 +62,8 @@ const Login = () => {
                     <button type="submit" className="auth-button">Sign In</button>
                 </form>
 
-                <p className="auth-footer">
-                    New to our platform?
-                    <span className="auth-link" onClick={() => navigate('/register')}>
-            Create an account
-          </span>
+                <p className="auth-footer"> New to our platform?
+                    <span className="auth-link" onClick={() => navigate('/register')}> Create an account </span>
                 </p>
             </div>
         </div>

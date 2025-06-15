@@ -1,4 +1,3 @@
-// frontend/src/pages/NeoPage.jsx
 import React, { useEffect, useState } from 'react';
 import { fetchUpcomingNeos } from "../Context/API.js";
 import NeoVisualization from "../Components/NeoVisulizer.jsx";
@@ -7,7 +6,6 @@ import {useNavigate} from "react-router-dom";
 import Navbar from "../Components/Navbar.jsx";
 
 export default function NeoPage() {
-    const navigate = useNavigate();
     const [neos, setNeos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -34,7 +32,6 @@ export default function NeoPage() {
             <Navbar/>
             <header className="neo-page-header">
                 <h1>Upcoming Near-Earth Objects</h1>
-                {/* Optional description: */}
                 <p>Select an object below to view an interactive 3D visualization.</p>
             </header>
 

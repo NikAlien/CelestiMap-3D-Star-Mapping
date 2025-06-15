@@ -41,23 +41,18 @@ export const getProject = (token, projectId) =>
 export const getProjectView = (token, projectId) =>
     api.get(`/project/view/${projectId}`);
 
-// Export project via back-end: returns a Blob.
 export const exportProject = async (projectData, format) => {
-    // projectData should match CompleteProjectDTO shape: { id, name, isPublic, createdAt, stars: [...], connections: [...] }
-    // Use responseType 'blob' to get binary data.
     const params = { format };
     const response = await api.post('/project/export', projectData, {
         params,
         responseType: 'blob',
         headers: {
-            // No Authorization needed for guest import/export
             'Content-Type': 'application/json'
         }
     });
-    return response.data; // Blob data
+    return response.data;
 };
 
-// Import project: upload file, receive CompleteProjectDTO JSON.
 export const importProject = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -66,7 +61,7 @@ export const importProject = async (file) => {
             'Content-Type': 'multipart/form-data'
         }
     });
-    return response.data; // CompleteProjectDTO
+    return response.data;
 };
 
 // Fetch NASA APOD
@@ -78,11 +73,10 @@ export const unsubscribeApod = (token) =>
 export const checkSubscribedApod = (token) =>
     api.get('/apod/subscribed', { headers: { Authorization: `Bearer ${token}` } });
 
+// Fetch NASA NEO
 export const fetchUpcomingNeos = (startDate, endDate) => {
-    // If you want optional params:
     const params = {};
-    if (startDate) params.start = startDate;  // in 'YYYY-MM-DD' format
+    if (startDate) params.start = startDate;
     if (endDate) params.end = endDate;
-    // Full URL:
     return axios.get('http://localhost:8080/api/neos/upcoming', { params });
 };
