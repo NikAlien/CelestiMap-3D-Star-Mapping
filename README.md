@@ -1,6 +1,6 @@
 # CelestiMap Frontend
 
-CelestiMap is an **interactive 3D star mapping web application** designed for astronomy enthusiasts, educators, and researchers. The frontend is built as a modern **React Single-Page Application (SPA)**, providing immersive visualization and intuitive user interactions.
+CelestiMap is an **interactive 3D star mapping web application** designed for astronomy enthusiasts, educators, and researchers. The frontend is built using **React** and **Three.js** technologies, providing immersive visualization and intuitive user interactions.
 
 ## ✨ Features
 
